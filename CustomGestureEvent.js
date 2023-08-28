@@ -130,6 +130,9 @@ class CustomGestureEvent extends CustomPointerEvent{
         }else if(this.moveY > 0){
             this.target.dispatchEvent((new this('swipedown', this.options(event))));
         }
+        if(this.moveX || this.moveY){
+            this.target.dispatchEvent((new this('swipe', this.options(event))));
+        }
 
         
 

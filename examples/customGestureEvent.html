@@ -43,16 +43,18 @@
 		CustomGestureEvent.active();
 	</script>
 	<style>
-		.event-area-wrap{position: relative;margin:20px auto; width: 300px;height: 300px;}
-		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;position: absolute; cursor: move;
+		.event-area-wrap{position: relative;margin:20px auto; }
+		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;;
 			display: flex;
 			flex-direction: row;
 			flex-wrap: nowrap;
 			align-content: center;
 			justify-content: center;
 			align-items: center;
+			margin:0 auto;
 		}
 		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move}
+		.event-target.toggle{background-color: #acb;}
 	</style>
 	
 </head>
@@ -90,9 +92,9 @@
 			<button type="button" class="btn btn-danger" onclick="CustomGestureEvent.deactive()" >deactive</button>
 		</div>
 		<hr>
-		<div class="event-area-wrap" id="event-area-wrap">
-			<div class="event-area" id="event-area" style="left:0;top:0;">
-				<div class="event-target" id="event-target" style="left:0;top:0;">target</div>
+		<div class="event-area-wrap" id="event-area-wrap" style="width:300px;height:300px;">
+			<div class="event-area" id="event-area" style="left:0;top:0;position: absolute; cursor: move">
+				<div class="event-target" id="event-target" style="left:0;top:0;">longpress</div>
 			</div>
 		</div>
 		
@@ -160,7 +162,13 @@
 
 			eventTarget.addEventListener('longpress',function(event){
 				let target = event.target;
+				event.detail.event.stopPropagation();
+				event.detail.event.preventDefault();
 				console.log('longpress',event);
+				// alert('longpress')
+				target.classList.toggle('toggle');
+				
+				return false;
 			})
 		</script>
 		<hr>
@@ -172,44 +180,140 @@
 			<div class="event-area"  id="area-swipe-x" style="left:0;top:0; cursor: ew-resize; height: 200px;">
 				<div class="event-target" id="target-swipe-x" style="left:0;top:0; cursor: ew-resize;">swipe-x</div>
 			</div>
+		</div>
+		<div class="text-center">
 			하늘색 상자 안에서 좌우 이동
 		</div>
 		<script>
-			let swipeX = document.querySelector('#area-swipe-x');
-			swipeX._moveX = 0;
-			swipeX.addEventListener('pointerdown',function(event){
+			let areaSwipeX = document.querySelector('#area-swipe-x');
+			areaSwipeX._moveX = 0;
+			areaSwipeX.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
-			swipeX.addEventListener('custompointermove',function(event){
+			areaSwipeX.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate("+(swipeX._moveX+event.detail.moveX)+"px,0)";
+				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,0)";
 			});
-			swipeX.addEventListener('swipeleft',function(event){
+			areaSwipeX.addEventListener('swipeleft',function(event){
 				console.log(event.type,event.detail.moveX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveX + swipeX._moveX < -100){
+				if(event.detail.moveX + this._moveX < -100){
 					target.style.transform="translate(-200px,0)";
-					swipeX._moveX = -100;
-				}else if(event.detail.moveX + swipeX._moveX < 100){
+					this._moveX = -200;
+				}else if(event.detail.moveX + this._moveX < 100){
 					target.style.transform="translate(0px,0)";
-					swipeX._moveX = 0;
+					this._moveX = 0;
 				}else{
-					target.style.transform="translate("+swipeX._moveX+"px,0)";
+					target.style.transform="translate("+this._moveX+"px,0)";
 				}
 			})
-			swipeX.addEventListener('swiperight',function(event){
+			areaSwipeX.addEventListener('swiperight',function(event){
 				console.log(event.type,event.detail.moveX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveX + swipeX._moveX > 100){
+				if(event.detail.moveX + this._moveX > 100){
 					target.style.transform="translate(200px,0)";
-					swipeX._moveX = 100;
-				}else if(event.detail.moveX + swipeX._moveX > -100){
+					this._moveX = 200;
+				}else if(event.detail.moveX + this._moveX > -100){
 					target.style.transform="translate(0px,0)";
-					swipeX._moveX = 0;
+					this._moveX = 0;
 				}else{
-					target.style.transform="translate("+swipeX._moveX+"px,0)";
+					target.style.transform="translate("+this._moveX+"px,0)";
 				}
 			})
+		</script>
+		<div class="event-area-wrap">
+			<div class="event-area"  id="area-swipe-y" style="left:0;top:0; cursor: ns-resize; width:200px; height: 300px;">
+				<div class="event-target" id="target-swipe-y" style="left:0;top:0; cursor: ns-resize;">swipe-y</div>
+			</div>
+		</div>
+		<div class="text-center">
+			하늘색 상자 안에서 상하 이동
+		</div>
+		<script>
+			let areaSwipeY = document.querySelector('#area-swipe-y');
+			areaSwipeY._moveY = 0;
+			areaSwipeY.addEventListener('pointerdown',function(event){
+				event.preventDefault()
+			});
+			areaSwipeY.addEventListener('custompointermove',function(event){
+				let target = this.querySelector('.event-target');
+				target.style.transform="translate(0,"+(this._moveY+event.detail.moveY)+"px)";
+			});
+			areaSwipeY.addEventListener('swipeup',function(event){
+				console.log(event.type,event.detail.moveX,event.detail.moveY);
+				let target = this.querySelector('.event-target');
+				if(event.detail.moveY + this._moveY < -100){
+					target.style.transform="translate(0,-200px)";
+					this._moveY = -200;
+				}else if(event.detail.moveY + this._moveY < 100){
+					target.style.transform="translate(0px,0)";
+					this._moveY = 0;
+				}else{
+					target.style.transform="translate("+this._moveY+"px,0)";
+				}
+			})
+			areaSwipeY.addEventListener('swipedown',function(event){
+				console.log(event.type,event.detail.moveX,event.detail.moveY);
+				let target = this.querySelector('.event-target');
+				if(event.detail.moveY + this._moveY > 100){
+					target.style.transform="translate(0,200px)";
+					this._moveY = 200;
+				}else if(event.detail.moveY + this._moveY > -100){
+					target.style.transform="translate(0px,0)";
+					this._moveY = 0;
+				}else{
+					target.style.transform="translate("+this._moveY+"px,0)";
+				}
+			})
+		</script>
+		<div class="event-area-wrap">
+			<div class="event-area"  id="area-swipe" style="left:0;top:0; cursor: ew-resize; width:300px; height: 300px;">
+				<div class="event-target" id="target-swipe" style="left:0;top:0; cursor: ew-resize;">swipe-y</div>
+			</div>
+		</div>
+		<div class="text-center">
+			하늘색 상자 안에서 좌우 이동
+		</div>
+		<script>
+			let areaSwipe = document.querySelector('#area-swipe');
+			areaSwipe._moveX = 0;
+			areaSwipe._moveY = 0;
+			areaSwipe.addEventListener('pointerdown',function(event){
+				event.preventDefault()
+			});
+			areaSwipe.addEventListener('custompointermove',function(event){
+				let target = this.querySelector('.event-target');
+				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,"+(this._moveY+event.detail.moveY)+"px)";
+			});
+			areaSwipe.addEventListener('swipe',function(event){
+				console.log(event.type,event.detail.moveX,event.detail.moveY);
+				let target = this.querySelector('.event-target');
+				if(event.detail.moveX + this._moveX > 100){
+					// target.style.transform="translate(200px,0)";
+					this._moveX = 200;
+				}else if(event.detail.moveX + this._moveX < -100){
+					// target.style.transform="translate(-200px,0)";
+					this._moveX = -200;
+				}else if(event.detail.moveX + this._moveX < 100){
+					// target.style.transform="translate(0px,0)";
+					this._moveX = 0;
+				}
+
+				if(event.detail.moveY + this._moveY > 100){
+					// target.style.transform="translate(200px,0)";
+					this._moveY = 200;
+				}else if(event.detail.moveY + this._moveY < -100){
+					// target.style.transform="translate(-200px,0)";
+					this._moveY = -200;
+				}else if(event.detail.moveY + this._moveY < 100){
+					// target.style.transform="translate(0px,0)";
+					this._moveY = 0;
+				}
+				
+				target.style.transform="translate("+this._moveX+"px,"+this._moveY+"px)";
+				
+			})
+			
 		</script>
 		<div style="height:100vh"></div>
 	</div>
