@@ -83,6 +83,7 @@ class CustomPointerEvent extends CustomEvent{
 
         document.addEventListener('pointermove',this.cbPointermove);
         document.addEventListener('pointerup',this.cbPointerup);
+        // document.addEventListener('pointercancel',this.cbPointercancel);
     }
     static cbPointermove = (event) =>{
         return this.pointermove(event)
@@ -101,8 +102,20 @@ class CustomPointerEvent extends CustomEvent{
 
         document.removeEventListener('pointermove',this.cbPointermove);
         document.removeEventListener('pointerup',this.cbPointerup);
+        // document.removeEventListener('pointercancel',this.cbPointercancel);
     }
 
+    // 나중에 하자
+    // static cbPointercancel = (event) =>{
+    //     return this.pointercancel(event)
+    // }
+    // static pointercancel(event){
+    //     this.target.dispatchEvent((new this('custompointercancel', this.options(event))));
+
+    //     document.removeEventListener('pointermove',this.cbPointermove);
+    //     document.removeEventListener('pointerup',this.cbPointerup);
+    //     document.removeEventListener('pointercancel',this.cbPointercancel);
+    // }
 
     /**
      * 
