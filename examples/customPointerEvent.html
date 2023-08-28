@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko" >
+<head>
+	<title>js customPointerEvent
+    </title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<script src="/js/ForGoogle.js"></script>
+	<!-- google analytics -->
+	<script>if(window.ForGoogle){ ForGoogle.analytics() }else{ console.log("failure : ForGoogle.analytics()");}</script>
+	
+
+	<!-- jquery 관련 -->
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script> -->
+
+	<!-- 부트스트랩 4 : IE8지원안됨! -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
+	<!-- vue.js -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	
+	<!-- meta og -->
+	
+	<meta property="og:title" content="js eventSwipe">
+	<meta property="og:description" content="js eventSwipe">
+	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
+	<meta property="og:image:width" content="190">
+	<meta property="og:image:height" content="70" />
+	<meta property="og:site_name" content="js eventSwipe" />
+	<meta property="og:type" content="website">
+	
+	<!-- //meta og -->
+	<script src="../CustomPointerEvent.js"></script>
+	<script>
+		CustomPointerEvent.active();
+	</script>
+	<style>
+		.event-area-wrap{position: relative;margin:20px auto; width: 300px;height: 300px;}
+		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;position: absolute; cursor: move;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
+		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move}
+	</style>
+	
+</head>
+<body>
+	<div class="container">
+        <h1>js CustomPointerEvent</h1>
+        <hr>
+		<h2>설명</h2>
+		<ul class="list-group">
+			<li class="list-group-item">pointerdown,pointermove,pointerup 이벤트에서 x,y 의 변화량을 moveX,moveY(detail 속에)로 제공한다</li>
+		</ul>
+		<hr>
+		<div class="text-center">
+			<button type="button" class="btn btn-success" onclick="CustomPointerEvent.active()" >active</button>
+			<button type="button" class="btn btn-danger" onclick="CustomPointerEvent.deactive()" >deactive</button>
+		</div>
+		<hr>
+		<div class="event-area-wrap" id="event-area-wrap">
+			<div class="event-area" id="event-area" style="left:0;top:0;">
+				<div class="event-target" id="event-target" style="left:0;top:0;">target</div>
+			</div>
+		</div>
+        
+		
+		<script>
+			let area = document.querySelector('#event-area');
+			area.addEventListener('custompointerdown',function(event){
+				if(this != event.target){return false;}
+				console.log('event',event);
+				event.detail.event.preventDefault();
+				event.detail.event.stopPropagation();
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+
+				this._left = parseInt(this.style.left,10);
+				this._top = parseInt(this.style.top,10);
+
+				this.style.left = 	(this._left+event.detail.moveX)+'px'
+				this.style.top = 	(this._top+event.detail.moveY)+'px'
+			})
+			area.addEventListener('custompointermove',function(event){
+				if(this != event.target){return false;}
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+
+				this.style.left = 	(this._left+event.detail.moveX)+'px'
+				this.style.top = 	(this._top+event.detail.moveY)+'px'
+			})
+			area.addEventListener('custompointerup',function(event){
+				if(this != event.target){return false;}
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+			})
+
+			let eventTarget = document.querySelector('#event-target');
+
+			eventTarget.addEventListener('custompointerdown',function(event){
+				event.detail.event.preventDefault();
+				event.detail.event.stopPropagation();
+				console.log('event',event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+				
+				let target = event.target;
+				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
+				// target._left = parseInt(target.style.left,10);
+				// target._top = parseInt(target.style.top,10);
+
+				// target.style.left = (target._left+event.detail.moveX)+'px'
+				// target.style.top = (target._top+event.detail.moveY)+'px'
+			})
+			eventTarget.addEventListener('custompointermove',function(event){
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+
+				let target = event.target;
+				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
+				// target._left = parseInt(target.style.left,10);
+				// target._top = parseInt(target.style.top,10);
+
+				// target.style.left = (target._left+event.detail.moveX)+'px'
+				// target.style.top = (target._top+event.detail.moveY)+'px'
+			})
+			eventTarget.addEventListener('custompointerup',function(event){
+				let target = event.target;
+				target.style.transform = `translate(0px,0px)`;
+				// target.style.left = 0;
+				// target.style.top = 0;
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+			})
+		</script>
+		<div style="height:100vh"></div>
+	</div>
+</body>
+</html>
