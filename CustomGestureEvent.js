@@ -130,6 +130,8 @@ class CustomGestureEvent extends CustomPointerEvent{
         }else if(this.moveY > 0){
             this.target.dispatchEvent((new this('swipedown', this.options(event))));
         }
+
+        // event type swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
         if(this.moveX || this.moveY){
             this.target.dispatchEvent((new this('swipe', this.options(event))));
         }

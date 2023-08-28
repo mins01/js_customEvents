@@ -285,6 +285,7 @@
 				let target = this.querySelector('.event-target');
 				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,"+(this._moveY+event.detail.moveY)+"px)";
 			});
+			// swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
 			areaSwipe.addEventListener('swipe',function(event){
 				console.log(event.type,event.detail.moveX,event.detail.moveY);
 				let target = this.querySelector('.event-target');
