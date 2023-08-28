@@ -5,6 +5,8 @@
 class CustomGestureEvent extends CustomPointerEvent{
     // longPress
     static longPressTimeout = 500; //0.5 sec. for Long press
+    static longPressCancelMove = 50; //100px
+
     static longPressTimeoutTm = null; //
 
 
@@ -48,9 +50,9 @@ class CustomGestureEvent extends CustomPointerEvent{
     }
     static pointermove = (event)=>{
         super.pointermove(event);
-        
-        if(this.longPressTimeoutTm){
-            console.log('cancel longpress');
+
+        if(this.longPressTimeoutTm && this.longPressCancelMove <= (this.moveX + this.moveY)){
+            console.log('cancel longpress',this.moveX, this.moveY);
             clearTimeout(this.longPressTimeoutTm);
             this.longPressTimeoutTm = null;
         }

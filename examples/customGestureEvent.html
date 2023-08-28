@@ -43,7 +43,7 @@
 		CustomGestureEvent.active();
 	</script>
 	<style>
-		.event-area-wrap{position: relative;margin:20px auto; }
+		.event-area-wrap{position: relative;margin:20px auto; touch-action: none; user-select: none; }
 		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;;
 			display: flex;
 			flex-direction: row;
@@ -54,7 +54,7 @@
 			margin:0 auto;
 		}
 		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move}
-		.event-target.toggle{background-color: #acb;}
+		.event-target.toggle{background-color: #acb;outline-style: dotted;}
 	</style>
 	
 </head>
@@ -114,32 +114,20 @@
 				event.detail.event.preventDefault();
 				event.detail.event.stopPropagation();
 				console.log('event',event);
-				// console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 				
 				let target = event.target;
 				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
-				// target._left = parseInt(target.style.left,10);
-				// target._top = parseInt(target.style.top,10);
-
-				// target.style.left = (target._left+event.detail.moveX)+'px'
-				// target.style.top = (target._top+event.detail.moveY)+'px'
 			})
 			eventTarget.addEventListener('custompointermove',function(event){
-				// console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 
 				let target = event.target;
 				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
-				// target._left = parseInt(target.style.left,10);
-				// target._top = parseInt(target.style.top,10);
 
-				// target.style.left = (target._left+event.detail.moveX)+'px'
-				// target.style.top = (target._top+event.detail.moveY)+'px'
 			})
 			eventTarget.addEventListener('custompointerup',function(event){
 				let target = event.target;
 				target.style.transform = `translate(0px,0px)`;
-				// target.style.left = 0;
-				// target.style.top = 0;
+
 				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 			})
 
