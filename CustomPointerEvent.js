@@ -26,14 +26,14 @@ class CustomPointerEvent extends CustomEvent{
     static rotateDelta = null
 
 
-    // moveX = null; // pageX1 - pageX0
-    // moveY = null; // pageY1 - pageY0
-    static get moveX(){
+    // moveDeltaX = null; // pageX1 - pageX0
+    // moveDeltaY = null; // pageY1 - pageY0
+    static get moveDeltaX(){
         if(this.pageX1 === null){ return null;}
         if(this.pageX0 === null){ return null;}
         return this.pageX1 - this.pageX0;
     }
-    static get moveY(){
+    static get moveDeltaY(){
         if(this.pageY1 === null){ return null;}
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
@@ -88,8 +88,8 @@ class CustomPointerEvent extends CustomEvent{
         return {
             target:this.target,
             event:event, // original event
-            moveX:this.moveX,
-            moveY:this.moveY,
+            moveDeltaX:this.moveDeltaX,
+            moveDeltaY:this.moveDeltaY,
             distance:this.distance,
             distanceDelta:this.distanceDelta,
             rotate:this.rotate,

@@ -87,15 +87,10 @@
 			<li class="list-group-item">bubbles : true</li>
 			<li class="list-group-item">cancelable : true</li>
 			<li class="list-group-item">composed : true</li>
-			<li class="list-group-item">detail : this.detail()</li>
+			<li class="list-group-item">detail : event.detail()</li>
 		</ul>
-		<h3>event.detail</h3>
-		<ul class="list-group">
-			<li class="list-group-item">target : 최초 이벤트 발생 엘레멘트</li>
-			<li class="list-group-item">moveX : x 이동 값</li>
-			<li class="list-group-item">moveY : y 이동 값</li>
-			<li class="list-group-item">event : original event</li>
-		</ul>
+		<h3>event.detail = customePointerEvent.detail 과 같다.</h3>
+		
 		<hr>
 		<div class="text-center">
 			<button type="button" class="btn btn-success" onclick="CustomGestureEvent.active()" >active</button>
@@ -117,19 +112,19 @@
 				console.log('event',event);
 				
 				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
+				target.style.transform = `translate(${event.detail.moveDeltaX}px,${event.detail.moveDeltaY}px)`;
 			})
 			eventTarget.addEventListener('custompointermove',function(event){
 
 				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
+				target.style.transform = `translate(${event.detail.moveDeltaX}px,${event.detail.moveDeltaY}px)`;
 
 			})
 			eventTarget.addEventListener('custompointerup',function(event){
 				let target = event.target;
 				target.style.transform = `translate(0px,0px)`;
 
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
 			})
 
 			eventTarget.addEventListener('longpress',function(event){
@@ -158,38 +153,38 @@
 		</div>
 		<script>
 			let areaSwipeX = document.querySelector('#area-swipe-x');
-			areaSwipeX._moveX = 0;
+			areaSwipeX._moveDeltaX = 0;
 			areaSwipeX.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipeX.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,0)";
+				target.style.transform="translate("+(this._moveDeltaX+event.detail.moveDeltaX)+"px,0)";
 			});
 			areaSwipeX.addEventListener('swipeleft',function(event){
-				console.log(event.type,event.detail.moveX);
+				console.log(event.type,event.detail.moveDeltaX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveX + this._moveX < -100){
+				if(event.detail.moveDeltaX + this._moveDeltaX < -100){
 					target.style.transform="translate(-200px,0)";
-					this._moveX = -200;
-				}else if(event.detail.moveX + this._moveX < 100){
+					this._moveDeltaX = -200;
+				}else if(event.detail.moveDeltaX + this._moveDeltaX < 100){
 					target.style.transform="translate(0px,0)";
-					this._moveX = 0;
+					this._moveDeltaX = 0;
 				}else{
-					target.style.transform="translate("+this._moveX+"px,0)";
+					target.style.transform="translate("+this._moveDeltaX+"px,0)";
 				}
 			})
 			areaSwipeX.addEventListener('swiperight',function(event){
-				console.log(event.type,event.detail.moveX);
+				console.log(event.type,event.detail.moveDeltaX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveX + this._moveX > 100){
+				if(event.detail.moveDeltaX + this._moveDeltaX > 100){
 					target.style.transform="translate(200px,0)";
-					this._moveX = 200;
-				}else if(event.detail.moveX + this._moveX > -100){
+					this._moveDeltaX = 200;
+				}else if(event.detail.moveDeltaX + this._moveDeltaX > -100){
 					target.style.transform="translate(0px,0)";
-					this._moveX = 0;
+					this._moveDeltaX = 0;
 				}else{
-					target.style.transform="translate("+this._moveX+"px,0)";
+					target.style.transform="translate("+this._moveDeltaX+"px,0)";
 				}
 			})
 		</script>
@@ -203,38 +198,38 @@
 		</div>
 		<script>
 			let areaSwipeY = document.querySelector('#area-swipe-y');
-			areaSwipeY._moveY = 0;
+			areaSwipeY._moveDeltaY = 0;
 			areaSwipeY.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipeY.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate(0,"+(this._moveY+event.detail.moveY)+"px)";
+				target.style.transform="translate(0,"+(this._moveDeltaY+event.detail.moveDeltaY)+"px)";
 			});
 			areaSwipeY.addEventListener('swipeup',function(event){
-				console.log(event.type,event.detail.moveX,event.detail.moveY);
+				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveY + this._moveY < -100){
+				if(event.detail.moveDeltaY + this._moveDeltaY < -100){
 					target.style.transform="translate(0,-200px)";
-					this._moveY = -200;
-				}else if(event.detail.moveY + this._moveY < 100){
+					this._moveDeltaY = -200;
+				}else if(event.detail.moveDeltaY + this._moveDeltaY < 100){
 					target.style.transform="translate(0px,0)";
-					this._moveY = 0;
+					this._moveDeltaY = 0;
 				}else{
-					target.style.transform="translate("+this._moveY+"px,0)";
+					target.style.transform="translate("+this._moveDeltaY+"px,0)";
 				}
 			})
 			areaSwipeY.addEventListener('swipedown',function(event){
-				console.log(event.type,event.detail.moveX,event.detail.moveY);
+				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveY + this._moveY > 100){
+				if(event.detail.moveDeltaY + this._moveDeltaY > 100){
 					target.style.transform="translate(0,200px)";
-					this._moveY = 200;
-				}else if(event.detail.moveY + this._moveY > -100){
+					this._moveDeltaY = 200;
+				}else if(event.detail.moveDeltaY + this._moveDeltaY > -100){
 					target.style.transform="translate(0px,0)";
-					this._moveY = 0;
+					this._moveDeltaY = 0;
 				}else{
-					target.style.transform="translate("+this._moveY+"px,0)";
+					target.style.transform="translate("+this._moveDeltaY+"px,0)";
 				}
 			})
 		</script>
@@ -248,42 +243,42 @@
 		</div>
 		<script>
 			let areaSwipe = document.querySelector('#area-swipe');
-			areaSwipe._moveX = 0;
-			areaSwipe._moveY = 0;
+			areaSwipe._moveDeltaX = 0;
+			areaSwipe._moveDeltaY = 0;
 			areaSwipe.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipe.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,"+(this._moveY+event.detail.moveY)+"px)";
+				target.style.transform="translate("+(this._moveDeltaX+event.detail.moveDeltaX)+"px,"+(this._moveDeltaY+event.detail.moveDeltaY)+"px)";
 			});
-			// swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
+			// swipe 는 custompointerup 과 거의 같다. moveDeltaX와 moveDeltaY가 0일 때 트리거 안하는 것만 차이 있다.
 			areaSwipe.addEventListener('swipe',function(event){
-				console.log(event.type,event.detail.moveX,event.detail.moveY);
+				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveX + this._moveX > 100){
+				if(event.detail.moveDeltaX + this._moveDeltaX > 100){
 					// target.style.transform="translate(200px,0)";
-					this._moveX = 200;
-				}else if(event.detail.moveX + this._moveX < -100){
+					this._moveDeltaX = 200;
+				}else if(event.detail.moveDeltaX + this._moveDeltaX < -100){
 					// target.style.transform="translate(-200px,0)";
-					this._moveX = -200;
-				}else if(event.detail.moveX + this._moveX < 100){
+					this._moveDeltaX = -200;
+				}else if(event.detail.moveDeltaX + this._moveDeltaX < 100){
 					// target.style.transform="translate(0px,0)";
-					this._moveX = 0;
+					this._moveDeltaX = 0;
 				}
 
-				if(event.detail.moveY + this._moveY > 100){
+				if(event.detail.moveDeltaY + this._moveDeltaY > 100){
 					// target.style.transform="translate(200px,0)";
-					this._moveY = 200;
-				}else if(event.detail.moveY + this._moveY < -100){
+					this._moveDeltaY = 200;
+				}else if(event.detail.moveDeltaY + this._moveDeltaY < -100){
 					// target.style.transform="translate(-200px,0)";
-					this._moveY = -200;
-				}else if(event.detail.moveY + this._moveY < 100){
+					this._moveDeltaY = -200;
+				}else if(event.detail.moveDeltaY + this._moveDeltaY < 100){
 					// target.style.transform="translate(0px,0)";
-					this._moveY = 0;
+					this._moveDeltaY = 0;
 				}
 				
-				target.style.transform="translate("+this._moveX+"px,"+this._moveY+"px)";
+				target.style.transform="translate("+this._moveDeltaX+"px,"+this._moveDeltaY+"px)";
 				
 			})
 			

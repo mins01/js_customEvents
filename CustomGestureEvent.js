@@ -8,9 +8,8 @@ class CustomGestureEvent extends CustomPointerEvent{
     static longPressCancelThreshold = 10; //100px
     static longPressTimeoutTm = null; //
 
-    static pinchThreshold = -0.1; //-0.1px
-    static zoomThreshold = 0.1; //0.1px
-    // static rotateThreshold = 0.1; //0.1rad
+    static distanceThreshold = 0.1; //0.1px // for pinch/zoom
+    static rotateThreshold = 0; //0.0001rad // for rotate
 
 
 
@@ -25,8 +24,8 @@ class CustomGestureEvent extends CustomPointerEvent{
     // static detail(event){
     //     return {
     //         target:this.target,
-    //         moveX:this.moveX,
-    //         moveY:this.moveY,
+    //         moveDeltaX:this.moveDeltaX,
+    //         moveDeltaY:this.moveDeltaY,
     //         pressedTime:this.pressedTime,
     //         event:event, // original event
     //     }
@@ -49,27 +48,26 @@ class CustomGestureEvent extends CustomPointerEvent{
     static pointermove = (event)=>{
         super.pointermove(event);
 
-        if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (this.moveX + this.moveY)){
-            // console.log('cancel longpress',this.moveX, this.moveY);
+        if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (this.moveDeltaX + this.moveDeltaY)){
             clearTimeout(this.longPressTimeoutTm);
             this.longPressTimeoutTm = null;
         }
 
         if(this.distanceDelta){
-            if(this.distanceDelta <= this.pinchThreshold){
-                this.target.dispatchEvent((new this('pinch', this.options(event))));
-            }
-            if(this.distanceDelta >= this.zoomThreshold){
-                this.target.dispatchEvent((new this('zoom', this.options(event))));
+            if(Math.abs(this.distanceDelta) >= this.distanceThreshold){
+                if(this.distanceDelta < 0){
+                    this.target.dispatchEvent((new this('pinch', this.options(event))));
+                }else if(this.distanceDelta > 0){
+                    this.target.dispatchEvent((new this('zoom', this.options(event))));
+                }
             }
             this.target.dispatchEvent((new this('pinchzoom', this.options(event))));
         }
 
         if(this.rotateDelta){
-            this.target.dispatchEvent((new this('rotate', this.options(event))));
-            this.rotate
-            // if(Math.abs(this.rotateDelta) >= this.rotateThreshold){
-            // }
+            if(Math.abs(this.rotateDelta) >= this.rotateThreshold){
+                this.target.dispatchEvent((new this('rotate', this.options(event))));
+            }
         }
     }
     static cbPointerup = (event) =>{
@@ -80,24 +78,23 @@ class CustomGestureEvent extends CustomPointerEvent{
         
 
         if(this.longPressTimeoutTm){
-            // console.log('cancel longpress'); 
             clearTimeout(this.longPressTimeoutTm); 
             this.longPressTimeoutTm = null;
         }
 
-        if(this.moveX < 0){
+        if(this.moveDeltaX < 0){
             this.target.dispatchEvent((new this('swipeleft', this.options(event))));
-        }else if(this.moveX > 0){
+        }else if(this.moveDeltaX > 0){
             this.target.dispatchEvent((new this('swiperight', this.options(event))));
         }
-        if(this.moveY < 0){
+        if(this.moveDeltaY < 0){
             this.target.dispatchEvent((new this('swipeup', this.options(event))));
-        }else if(this.moveY > 0){
+        }else if(this.moveDeltaY > 0){
             this.target.dispatchEvent((new this('swipedown', this.options(event))));
         }
 
-        // event type swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
-        if(this.moveX || this.moveY){
+        // event type swipe 는 custompointerup 과 거의 같다. moveDeltaX와 moveDeltaY가 0일 때 트리거 안하는 것만 차이 있다.
+        if(this.moveDeltaX || this.moveDeltaY){
             this.target.dispatchEvent((new this('swipe', this.options(event))));
         }
     }
