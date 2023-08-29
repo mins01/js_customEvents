@@ -18,9 +18,12 @@ class CustomPointerEvent extends CustomEvent{
     static pageY1 = null; // event.pageY;
 
     // 멀티 포인터 1,2 번의 거리
-    static pinchZoom0 = null;
-    static pinchZoom1 = null;
-    static pinchZoom = 0;
+    static distance = null;
+    static distanceDelta = 0;
+
+    // 멀티포인트 1,2 번의 각도 rad
+    static rotate = null
+    static rotateDelta = null
 
 
     // moveX = null; // pageX1 - pageX0
@@ -35,10 +38,10 @@ class CustomPointerEvent extends CustomEvent{
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
     }
-    // static get pinchZoom(){ // 간격 변화량
-    //     if(this.pinchZoom1 === null){ return null;}
-    //     if(this.pinchZoom0 === null){ return null;}
-    //     return this.pinchZoom1 - this.pinchZoom0;
+    // static get distanceDelta(){ // 간격 변화량
+    //     if(this.distance1 === null){ return null;}
+    //     if(this.distance === null){ return null;}
+    //     return this.distance1 - this.distance;
     // }
 
     static indexOfPointers(event){
@@ -84,10 +87,13 @@ class CustomPointerEvent extends CustomEvent{
     static detail(event){
         return {
             target:this.target,
+            event:event, // original event
             moveX:this.moveX,
             moveY:this.moveY,
-            pinchZoom:this.pinchZoom,
-            event:event, // original event
+            distance:this.distance,
+            distanceDelta:this.distanceDelta,
+            rotate:this.rotate,
+            rotateDelta:this.rotateDelta,
             pointers:this.pointers,
             pointerNumber:this.pointers.length,
         }
@@ -106,11 +112,19 @@ class CustomPointerEvent extends CustomEvent{
         this.pageY1 = event.pageY;
 
         if(this.pointers.length > 1){
-            this.pinchZoom0 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
-            this.pinchZoom1 = this.pinchZoom0;
+            this.distance = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            const distance1 = this.distance;
+            this.distanceDelta = distance1-this.distance;
+
+            this.rotate = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
+            const rotate1 = this.rotate;
+            this.rotateDelta = rotate1-this.rotate0;
         }else{
-            this.pinchZoom0 = null;
-            this.pinchZoom1 = null;
+            this.distance = null;
+            this.distanceDelta = null;
+
+            this.rotate = null;
+            this.rotateDelta = null;
         }
 
 
@@ -128,10 +142,13 @@ class CustomPointerEvent extends CustomEvent{
         let pointerId = this.indexOfPointers(event);
         if(pointerId > -1) this.pointers[pointerId] = event;
         if(this.pointers.length > 1){
-            this.pinchZoom1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
-            this.pinchZoom = this.pinchZoom1-this.pinchZoom0;
-            this.pinchZoom0 = this.pinchZoom1;
-            console.log(this.pointers);
+            const distance1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            this.distanceDelta = distance1-this.distance;
+            this.distance = distance1;
+
+            const rotate1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
+            this.rotateDelta = rotate1-this.rotate;
+            this.rotate = rotate1;
         }
 
         this.pageX1 = event.pageX;
@@ -145,7 +162,11 @@ class CustomPointerEvent extends CustomEvent{
     static pointerup(event){
         this.target.dispatchEvent((new this('custompointerup', this.options(event))));
         
-        this.pinchZoom = 0;
+        this.distance = null;
+        this.distanceDelta = null;
+
+        this.rotate = null;
+        this.rotateDelta = null;
         
         // multi pointer
         let pointerId = this.indexOfPointers(event);
@@ -166,7 +187,11 @@ class CustomPointerEvent extends CustomEvent{
     static pointercancel(event){
         event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
         
-        this.pinchZoom = 0;
+        this.distance = null;
+        this.distanceDelta = null;
+
+        this.rotate = null;
+        this.rotateDelta = null;
         
         // multi pointer
         let pointerId = this.indexOfPointers(event);

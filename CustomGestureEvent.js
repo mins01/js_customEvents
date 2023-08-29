@@ -8,8 +8,9 @@ class CustomGestureEvent extends CustomPointerEvent{
     static longPressCancelThreshold = 10; //100px
     static longPressTimeoutTm = null; //
 
-    static pinchThreshold = -0.1; //10px
-    static zoomThreshold = 0.1; //10px
+    static pinchThreshold = -0.1; //-0.1px
+    static zoomThreshold = 0.1; //0.1px
+    // static rotateThreshold = 0.1; //0.1rad
 
 
 
@@ -54,17 +55,22 @@ class CustomGestureEvent extends CustomPointerEvent{
             this.longPressTimeoutTm = null;
         }
 
-        if(this.pinchZoom){
-            if(this.pinchZoom <= this.pinchThreshold){
+        if(this.distanceDelta){
+            if(this.distanceDelta <= this.pinchThreshold){
                 this.target.dispatchEvent((new this('pinch', this.options(event))));
             }
-            if(this.pinchZoom >= this.zoomThreshold){
+            if(this.distanceDelta >= this.zoomThreshold){
                 this.target.dispatchEvent((new this('zoom', this.options(event))));
             }
             this.target.dispatchEvent((new this('pinchzoom', this.options(event))));
         }
 
-
+        if(this.rotateDelta){
+            this.target.dispatchEvent((new this('rotate', this.options(event))));
+            this.rotate
+            // if(Math.abs(this.rotateDelta) >= this.rotateThreshold){
+            // }
+        }
     }
     static cbPointerup = (event) =>{
         return this.pointerup(event)

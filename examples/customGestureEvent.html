@@ -300,26 +300,49 @@
 			let areaPinchZoom = document.querySelector('#area-pinchzoom');
 			areaPinchZoom._scale = 1;
 			areaPinchZoom.addEventListener('pinch',function(event){
-				console.log(event.type,event.detail.pinchZoom);
+				console.log(event.type,event.detail.distanceDelta);
 				let target = this.querySelector('.event-target');
-				let pinchZoom = event.detail.pinchZoom;
+				let distanceDelta = event.detail.distanceDelta;
 
-				if(Math.abs(pinchZoom)<0.1) return;
-				this._scale = Math.max(0.2, areaPinchZoom._scale + pinchZoom/100);
+				if(Math.abs(distanceDelta)<0.1) return;
+				this._scale = Math.max(0.2, this._scale + distanceDelta/100);
 				target.style.transform='scale('+this._scale+')';
 			});
 			areaPinchZoom.addEventListener('zoom',function(event){
-				console.log(event.type,event.detail.pinchZoom);
+				console.log(event.type,event.detail.distanceDelta);
 				let target = this.querySelector('.event-target');
-				let pinchZoom = event.detail.pinchZoom;
-				if(Math.abs(pinchZoom)<0.1) return;
+				let distanceDelta = event.detail.distanceDelta;
+				if(Math.abs(distanceDelta)<0.1) return;
 				
-				this._scale = Math.min(2, areaPinchZoom._scale + pinchZoom/100);
+				this._scale = Math.min(2, this._scale + distanceDelta/100);
 				target.style.transform='scale('+this._scale+')';
 			});
+			areaPinchZoom.addEventListener('pinchzoom',function(event){
+				console.log(event.type,event.detail.distanceDelta);
+			});
+			
+		</script>
 
-			
-			
+		<div class="event-area-wrap">
+			<div class="event-area"  id="area-rotate" style="left:0;top:0; padding:20px; width:100%; touch-action: none;">
+				<div class="event-target" style="left:0;top:0; cursor: ew-resize;">ROTATE</div>
+			</div>
+		</div>
+		<div class="text-center">
+			하늘색 상자 안에서 두개를 터치하고 회전
+		</div>
+		<script>
+			let areaRotate = document.querySelector('#area-rotate');
+			areaRotate._rotate = 0;
+			areaRotate.addEventListener('rotate',function(event){
+				console.log(event.type,event.detail.rotateDelta);
+				let target = this.querySelector('.event-target');
+				let rotateDelta = event.detail.rotateDelta;
+				// console.log(event.detail.rotate);
+				this._rotate = this._rotate + rotateDelta
+				target.style.transform='rotate('+this._rotate+'rad)';
+				
+			});
 		</script>
 		<div style="height:100vh"></div>
 	</div>
