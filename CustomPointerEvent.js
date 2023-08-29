@@ -3,7 +3,7 @@
  * PointerEvent 등 를 확장해서 custom event를 triger 해서 사용할 수 있게 한다.
  */
 class CustomPointerEvent extends CustomEvent{
-    
+    static events = []; // 멀티 이벤트 처리용.
     static actived = false;
     static target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
     // 커스텀 이벤트 옵션 값 설정
@@ -17,6 +17,7 @@ class CustomPointerEvent extends CustomEvent{
     static pageX1 = null; // event.pageX;
     static pageY1 = null; // event.pageY;
 
+
     // moveX = null; // pageX1 - pageX0
     // moveY = null; // pageY1 - pageY0
     static get moveX(){
@@ -28,6 +29,14 @@ class CustomPointerEvent extends CustomEvent{
         if(this.pageY1 === null){ return null;}
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
+    }
+    static indexOfEvents(event){
+        for(let i=0,m=this.events.length;i<m;i++){
+            if(event.pointerId == this.events[i].pointerId){
+                return i;
+            }
+        }
+        return -l
     }
 
     //=== 전역 메소드 
@@ -67,23 +76,28 @@ class CustomPointerEvent extends CustomEvent{
             moveX:this.moveX,
             moveY:this.moveY,
             event:event, // original event
+            events:this.events,
         }
     }
     static cbPointerdown = (event) =>{
         return this.pointerdown(event)
     }
     static pointerdown(event){
+        this.events.push(event);
+
         this.target = event.target;
         this.pageX0 = event.pageX;
         this.pageY0 = event.pageY;
         this.pageX1 = event.pageX;
         this.pageY1 = event.pageY;
 
+
+
         this.target.dispatchEvent((new this('custompointerdown', this.options(event))));
 
         document.addEventListener('pointermove',this.cbPointermove);
         document.addEventListener('pointerup',this.cbPointerup);
-        // document.addEventListener('pointercancel',this.cbPointercancel);
+        document.addEventListener('pointercancel',this.cbPointercancel);
     }
     static cbPointermove = (event) =>{
         return this.pointermove(event)
@@ -98,24 +112,38 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointerup(event)
     }
     static pointerup(event){
+        console.log('pointerup',event.pointerId);
         this.target.dispatchEvent((new this('custompointerup', this.options(event))));
 
-        document.removeEventListener('pointermove',this.cbPointermove);
-        document.removeEventListener('pointerup',this.cbPointerup);
-        // document.removeEventListener('pointercancel',this.cbPointercancel);
+        let pointerId = this.indexOfEvents(event);
+        if(pointerId >= 0) this.events.splice(pointerId, 1);
+
+        if(this.events.length===0){
+            document.removeEventListener('pointermove',this.cbPointermove);
+            document.removeEventListener('pointerup',this.cbPointerup);
+            document.removeEventListener('pointercancel',this.cbPointercancel);
+        }
+        
     }
 
-    // 나중에 하자
-    // static cbPointercancel = (event) =>{
-    //     return this.pointercancel(event)
-    // }
-    // static pointercancel(event){
-    //     this.target.dispatchEvent((new this('custompointercancel', this.options(event))));
 
-    //     document.removeEventListener('pointermove',this.cbPointermove);
-    //     document.removeEventListener('pointerup',this.cbPointerup);
-    //     document.removeEventListener('pointercancel',this.cbPointercancel);
-    // }
+    static cbPointercancel = (event) =>{
+        return this.pointercancel(event)
+    }
+    static pointercancel(event){
+        console.log('pointercancel',event.pointerId);
+
+        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
+        
+        let pointerId = this.indexOfEvents(event);
+        if(pointerId >= 0) this.events.splice(pointerId, 1);
+
+        if(this.events.length===0){
+            document.removeEventListener('pointermove',this.cbPointermove);
+            document.removeEventListener('pointerup',this.cbPointerup);
+            document.removeEventListener('pointercancel',this.cbPointercancel);
+        }
+    }
 
     /**
      * 
