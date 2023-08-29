@@ -89,6 +89,16 @@
 			<li class="list-group-item">pointerNumber : 다중 포인터 이벤트 수</li>
 			
 		</ul>
+		<h3>주의</h3>
+		<ul class="list-group">
+			<li class="list-group-item">
+				사용시 브라우저의 터치로 인한 제어를 막아야한다.(특히 모바일 브라우저)<br>
+				<code>touch-action:none; user-select:none;</code><br>
+				를 사용해서 터치 제어와 컨텍스트메뉴 제어를 막을 수 있다.
+			</li>
+			
+			
+		</ul>
 		<hr>
 		<div class="text-center">
 			<button type="button" class="btn btn-success" onclick="CustomPointerEvent.active()" >active</button>

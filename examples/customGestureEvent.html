@@ -304,17 +304,17 @@
 				let target = this.querySelector('.event-target');
 				let pinchZoom = event.detail.pinchZoom;
 
-				if(Math.abs(pinchZoom)<0.2) return;
-				this._scale = Math.max(0.1, areaPinchZoom._scale + pinchZoom/100);
+				if(Math.abs(pinchZoom)<0.1) return;
+				this._scale = Math.max(0.2, areaPinchZoom._scale + pinchZoom/100);
 				target.style.transform='scale('+this._scale+')';
 			});
 			areaPinchZoom.addEventListener('zoom',function(event){
 				console.log(event.type,event.detail.pinchZoom);
 				let target = this.querySelector('.event-target');
 				let pinchZoom = event.detail.pinchZoom;
-				if(Math.abs(pinchZoom)<0.2) return;
+				if(Math.abs(pinchZoom)<0.1) return;
 				
-				this._scale = Math.max(0.1, areaPinchZoom._scale + pinchZoom/100);
+				this._scale = Math.min(2, areaPinchZoom._scale + pinchZoom/100);
 				target.style.transform='scale('+this._scale+')';
 			});
 
