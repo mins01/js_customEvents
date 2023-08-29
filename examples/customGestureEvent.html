@@ -54,14 +54,27 @@
 			margin:0 auto;
 			touch-action: none; user-select: none;
 		}
-		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move}
+		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move; 
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+			margin:0 auto;
+		}
 		.event-target.toggle{background-color: #acb;outline-style: dotted;}
+
+		#area-swipe-sample.on{
+			font-weight: bold;
+			filter:invert(1)
+		}
 	</style>
 	
 </head>
 <body>
 	<div class="container">
-        <h1>js CustomGesturesEvent</h1>
+        <h1 class="text-truncate">js CustomGesturesEvent</h1>
         <hr>
 		<h2>설명</h2>
 		<ul class="list-group">
@@ -69,7 +82,8 @@
 			<li class="list-group-item">CustomPointerEvent 를 상속 받아는다</li>
 		</ul>
 		<hr>
-		<h2>spec</h2>
+		<h2>SPECIFICATION</h2>
+		<hr>
 		<h3>event type</h3>
 		<ul class="list-group">
 			<li class="list-group-item">longpress</li>
@@ -77,10 +91,18 @@
 			<li class="list-group-item">swiperight</li>
 			<li class="list-group-item">swipeup</li>
 			<li class="list-group-item">swipedown</li>
+			<li class="list-group-item">swipe</li>
+			<li class="list-group-item">pinch</li>
+			<li class="list-group-item">zoom</li>
+			<li class="list-group-item">pinchzoom</li>
+			<li class="list-group-item">rotate</li>
 		</ul>
 		<h3>event static property</h3>
 		<ul class="list-group">
-			<li class="list-group-item">longPressTimeout : longpress 이벤트의 발생 시간 (ms). 기본값 0.5초(500ms)</li>
+			<li class="list-group-item">CustomGesturesEvent.longPressTimeout : longpress 이벤트의 발생 시간 (ms). 기본값 500 (0.5초)</li>
+			<li class="list-group-item">CustomGesturesEvent.longPressCancelThreshold : longpress 진행 중 포인터 이동 시 취소되는 임계점. 기본값 10px</li>
+			<li class="list-group-item">CustomGesturesEvent.distanceThreshold : pinch, zoom 발생의 임계점. 0.1px </li>
+			<li class="list-group-item">CustomGesturesEvent.rotateThreshold : rotate 발생의 임계점. 0rad (제안 안함) </li>
 		</ul>
 		<h3>event options</h3>
 		<ul class="list-group">
@@ -90,19 +112,74 @@
 			<li class="list-group-item">detail : event.detail()</li>
 		</ul>
 		<h3>event.detail = customePointerEvent.detail 과 같다.</h3>
-		
+		<hr>
+		<div class="text-center">
+			<figure>
+				<img src="https://cdn.powermockup.com/wireframe-and-mockup-shapes/touch-gestures-screenshot.v1.jpg" style="max-width: 100%;">
+				<figcaption>https://www.powermockup.com/libs/wireframe-and-mockup-shapes/touch-gestures</figcaption>
+			</figure>
+		</div>
 		<hr>
 		<div class="text-center">
 			<button type="button" class="btn btn-success" onclick="CustomGestureEvent.active()" >active</button>
 			<button type="button" class="btn btn-danger" onclick="CustomGestureEvent.deactive()" >deactive</button>
 		</div>
 		<hr>
+		<h2>SMAPLE</h2>
+		<hr>
+		
+		<div class="event-area-wrap">
+			<div class="event-area"  id="area-swipe-sample" style="left:0;top:0; cursor: ew-resize; height: 50px; border-radius: 10em; position: relative;">
+				<div class="event-target" style="left:5px;top:5px; position: absolute; border-radius: 10em;cursor: ew-resize;  margin:0;height: 40px;width: 40px;"></div>
+				<div class="text-center" style="z-index: 3;">밀어서 잠금 해제</div>
+			</div>
+		</div>
+		<div class="text-center">
+			밀어서 잠금 해제
+		</div>
+		<script>
+			let areaSwipeSample = document.querySelector('#area-swipe-sample');
+			areaSwipeSample._moveDeltaX = 0;
+			areaSwipeSample.addEventListener('pointerdown',function(event){
+				event.preventDefault()
+			});
+			areaSwipeSample.addEventListener('custompointermove',function(event){
+				let target = this.querySelector('.event-target');
+				target.style.transform="translate( clamp(0px,"+(this._moveDeltaX+event.detail.moveDeltaX)+"px,250px),0)";
+			});
+			areaSwipeSample.addEventListener('swipeleft',function(event){
+				console.log(event.type,event.detail.moveDeltaX);
+				let target = this.querySelector('.event-target');
+				if(event.detail.moveDeltaX + this._moveDeltaX < 250-100){
+					target.style.transform="translate(0px,0)";
+					this._moveDeltaX = 0;
+					this.classList.remove('on')
+				}else{
+					target.style.transform="translate("+this._moveDeltaX+"px,0)";
+				}
+			})
+			areaSwipeSample.addEventListener('swiperight',function(event){
+				console.log(event.type,event.detail.moveDeltaX);
+				let target = this.querySelector('.event-target');
+				if(event.detail.moveDeltaX + this._moveDeltaX > 250-100){
+					target.style.transform="translate(250px,0)";
+					this._moveDeltaX = 250;
+					this.classList.add('on')
+				}else{
+					target.style.transform="translate("+this._moveDeltaX+"px,0)";
+				}
+			})
+		</script>
+		<hr>
+		
 		<div class="event-area-wrap" id="event-area-wrap" style="width:300px;height:300px;">
 			<div class="event-area" id="event-area" style="left:0;top:0;">
 				<div class="event-target" id="event-target" style="left:0;top:0; cursor: move">longpress</div>
 			</div>
 		</div>
-		
+		<div class="text-center">
+			길게 누르기, 누르면서 이동시 취소됨
+		</div>
 		<script>
 			let eventTarget = document.querySelector('#event-target');
 
@@ -138,11 +215,9 @@
 				return false;
 			})
 		</script>
+		
 		<hr>
-		<figure>
-			<img src="https://cdn.powermockup.com/wireframe-and-mockup-shapes/touch-gestures-screenshot.v1.jpg">
-			<figcaption>https://www.powermockup.com/libs/wireframe-and-mockup-shapes/touch-gestures</figcaption>
-		</figure>
+		
 		<div class="event-area-wrap">
 			<div class="event-area"  id="area-swipe-x" style="left:0;top:0; cursor: ew-resize; height: 200px;">
 				<div class="event-target" id="target-swipe-x" style="left:0;top:0; cursor: ew-resize;">swipe-x</div>
@@ -188,6 +263,8 @@
 				}
 			})
 		</script>
+		<hr>
+		
 		<div class="event-area-wrap">
 			<div class="event-area"  id="area-swipe-y" style="left:0;top:0; cursor: ns-resize; width:200px; height: 300px;">
 				<div class="event-target" id="target-swipe-y" style="left:0;top:0; cursor: ns-resize;">swipe-y</div>
@@ -229,17 +306,19 @@
 					target.style.transform="translate(0px,0)";
 					this._moveDeltaY = 0;
 				}else{
-					target.style.transform="translate("+this._moveDeltaY+"px,0)";
+					target.style.transform="translate(0,"+this._moveDeltaY+"px)";
 				}
 			})
 		</script>
+		<hr>
+		
 		<div class="event-area-wrap">
-			<div class="event-area"  id="area-swipe" style="left:0;top:0; cursor: ew-resize; width:300px; height: 300px;">
-				<div class="event-target" id="target-swipe" style="left:0;top:0; cursor: ew-resize;">swipe-y</div>
+			<div class="event-area"  id="area-swipe" style="left:0;top:0; cursor:move; width:300px; height: 300px;">
+				<div class="event-target" id="target-swipe" style="left:0;top:0; cursor:move;">swipe</div>
 			</div>
 		</div>
 		<div class="text-center">
-			하늘색 상자 안에서 좌우 이동
+			하늘색 상자 안에서 상하좌우 이동
 		</div>
 		<script>
 			let areaSwipe = document.querySelector('#area-swipe');
@@ -283,9 +362,11 @@
 			})
 			
 		</script>
+		<hr>
+		
 		<div class="event-area-wrap">
 			<div class="event-area"  id="area-pinchzoom" style="left:0;top:0; padding:20px; width:100%; touch-action: none;">
-				<div class="event-target" style="left:0;top:0; cursor: ew-resize;">PINCH/ZOOM</div>
+				<div class="event-target" style="left:0;top:0; ">PINCH/ZOOM</div>
 			</div>
 		</div>
 		<div class="text-center">
@@ -318,9 +399,11 @@
 			
 		</script>
 
-		<div class="event-area-wrap">
+		<hr>
+		
+<div class="event-area-wrap">
 			<div class="event-area"  id="area-rotate" style="left:0;top:0; padding:20px; width:100%; touch-action: none;">
-				<div class="event-target" style="left:0;top:0; cursor: ew-resize;">ROTATE</div>
+				<div class="event-target" style="left:0;top:0; ">ROTATE</div>
 			</div>
 		</div>
 		<div class="text-center">
