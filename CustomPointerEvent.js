@@ -3,7 +3,7 @@
  * PointerEvent 등 를 확장해서 custom event를 triger 해서 사용할 수 있게 한다.
  */
 class CustomPointerEvent extends CustomEvent{
-    static events = []; // 멀티 이벤트 처리용.
+    static pointers = []; // 멀티 이벤트 처리용.
     static actived = false;
     static target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
     // 커스텀 이벤트 옵션 값 설정
@@ -16,6 +16,11 @@ class CustomPointerEvent extends CustomEvent{
     static pageY0 = null; // event.pageY;
     static pageX1 = null; // event.pageX;
     static pageY1 = null; // event.pageY;
+
+    // 멀티 포인터 1,2 번의 거리
+    static pinchZoom0 = null;
+    static pinchZoom1 = null;
+    static pinchZoom = 0;
 
 
     // moveX = null; // pageX1 - pageX0
@@ -30,9 +35,15 @@ class CustomPointerEvent extends CustomEvent{
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
     }
-    static indexOfEvents(event){
-        for(let i=0,m=this.events.length;i<m;i++){
-            if(event.pointerId == this.events[i].pointerId){
+    // static get pinchZoom(){ // 간격 변화량
+    //     if(this.pinchZoom1 === null){ return null;}
+    //     if(this.pinchZoom0 === null){ return null;}
+    //     return this.pinchZoom1 - this.pinchZoom0;
+    // }
+
+    static indexOfPointers(event){
+        for(let i=0,m=this.pointers.length;i<m;i++){
+            if(event.pointerId == this.pointers[i].pointerId){
                 return i;
             }
         }
@@ -75,15 +86,18 @@ class CustomPointerEvent extends CustomEvent{
             target:this.target,
             moveX:this.moveX,
             moveY:this.moveY,
+            pinchZoom:this.pinchZoom,
             event:event, // original event
-            events:this.events,
+            pointers:this.pointers,
+            pointerNumber:this.pointers.length,
         }
     }
     static cbPointerdown = (event) =>{
         return this.pointerdown(event)
     }
     static pointerdown(event){
-        this.events.push(event);
+        // multi pointer
+        this.pointers.push(event);
 
         this.target = event.target;
         this.pageX0 = event.pageX;
@@ -91,6 +105,13 @@ class CustomPointerEvent extends CustomEvent{
         this.pageX1 = event.pageX;
         this.pageY1 = event.pageY;
 
+        if(this.pointers.length > 1){
+            this.pinchZoom0 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            this.pinchZoom1 = this.pinchZoom0;
+        }else{
+            this.pinchZoom0 = null;
+            this.pinchZoom1 = null;
+        }
 
 
         this.target.dispatchEvent((new this('custompointerdown', this.options(event))));
@@ -103,6 +124,16 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointermove(event)
     }
     static pointermove(event){
+        // multi pointer
+        let pointerId = this.indexOfPointers(event);
+        if(pointerId > -1) this.pointers[pointerId] = event;
+        if(this.pointers.length > 1){
+            this.pinchZoom1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            this.pinchZoom = this.pinchZoom1-this.pinchZoom0;
+            this.pinchZoom0 = this.pinchZoom1;
+            console.log(this.pointers);
+        }
+
         this.pageX1 = event.pageX;
         this.pageY1 = event.pageY;
 
@@ -112,13 +143,15 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointerup(event)
     }
     static pointerup(event){
-        console.log('pointerup',event.pointerId);
         this.target.dispatchEvent((new this('custompointerup', this.options(event))));
+        
+        this.pinchZoom = 0;
+        
+        // multi pointer
+        let pointerId = this.indexOfPointers(event);
+        if(pointerId >= 0) this.pointers.splice(pointerId, 1);
 
-        let pointerId = this.indexOfEvents(event);
-        if(pointerId >= 0) this.events.splice(pointerId, 1);
-
-        if(this.events.length===0){
+        if(this.pointers.length===0){
             document.removeEventListener('pointermove',this.cbPointermove);
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
@@ -131,14 +164,15 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointercancel(event)
     }
     static pointercancel(event){
-        console.log('pointercancel',event.pointerId);
-
         event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
         
-        let pointerId = this.indexOfEvents(event);
-        if(pointerId >= 0) this.events.splice(pointerId, 1);
+        this.pinchZoom = 0;
+        
+        // multi pointer
+        let pointerId = this.indexOfPointers(event);
+        if(pointerId >= 0) this.pointers.splice(pointerId, 1);
 
-        if(this.events.length===0){
+        if(this.pointers.length===0){
             document.removeEventListener('pointermove',this.cbPointermove);
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
