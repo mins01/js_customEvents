@@ -125,7 +125,7 @@
 			<button type="button" class="btn btn-danger" onclick="CustomGestureEvent.deactive()" >deactive</button>
 		</div>
 		<hr>
-		<h2>SMAPLE</h2>
+		<h2>SAMPLE</h2>
 		<hr>
 		
 		<div class="event-area-wrap">
@@ -139,34 +139,34 @@
 		</div>
 		<script>
 			let areaSwipeSample = document.querySelector('#area-swipe-sample');
-			areaSwipeSample._moveDeltaX = 0;
+			areaSwipeSample._moveX = 0;
 			areaSwipeSample.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipeSample.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate( clamp(0px,"+(this._moveDeltaX+event.detail.moveDeltaX)+"px,250px),0)";
+				target.style.transform="translate( clamp(0px,"+(this._moveX+event.detail.moveX)+"px,250px),0)";
 			});
 			areaSwipeSample.addEventListener('swipeleft',function(event){
-				console.log(event.type,event.detail.moveDeltaX);
+				console.log(event.type,event.detail.moveX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaX + this._moveDeltaX < 250-100){
+				if(event.detail.moveX + this._moveX < 250-100){
 					target.style.transform="translate(0px,0)";
-					this._moveDeltaX = 0;
+					this._moveX = 0;
 					this.classList.remove('on')
 				}else{
-					target.style.transform="translate("+this._moveDeltaX+"px,0)";
+					target.style.transform="translate("+this._moveX+"px,0)";
 				}
 			})
 			areaSwipeSample.addEventListener('swiperight',function(event){
-				console.log(event.type,event.detail.moveDeltaX);
+				console.log(event.type,event.detail.moveX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaX + this._moveDeltaX > 250-100){
+				if(event.detail.moveX + this._moveX > 250-100){
 					target.style.transform="translate(250px,0)";
-					this._moveDeltaX = 250;
+					this._moveX = 250;
 					this.classList.add('on')
 				}else{
-					target.style.transform="translate("+this._moveDeltaX+"px,0)";
+					target.style.transform="translate("+this._moveX+"px,0)";
 				}
 			})
 		</script>
@@ -189,19 +189,19 @@
 				console.log('event',event);
 				
 				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveDeltaX}px,${event.detail.moveDeltaY}px)`;
+				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
 			})
 			eventTarget.addEventListener('custompointermove',function(event){
 
 				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveDeltaX}px,${event.detail.moveDeltaY}px)`;
+				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
 
 			})
 			eventTarget.addEventListener('custompointerup',function(event){
 				let target = event.target;
 				target.style.transform = `translate(0px,0px)`;
 
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 			})
 
 			eventTarget.addEventListener('longpress',function(event){
@@ -228,38 +228,38 @@
 		</div>
 		<script>
 			let areaSwipeX = document.querySelector('#area-swipe-x');
-			areaSwipeX._moveDeltaX = 0;
+			areaSwipeX._moveX = 0;
 			areaSwipeX.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipeX.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate("+(this._moveDeltaX+event.detail.moveDeltaX)+"px,0)";
+				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,0)";
 			});
 			areaSwipeX.addEventListener('swipeleft',function(event){
-				console.log(event.type,event.detail.moveDeltaX);
+				console.log(event.type,event.detail.moveX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaX + this._moveDeltaX < -100){
+				if(event.detail.moveX + this._moveX < -100){
 					target.style.transform="translate(-200px,0)";
-					this._moveDeltaX = -200;
-				}else if(event.detail.moveDeltaX + this._moveDeltaX < 100){
+					this._moveX = -200;
+				}else if(event.detail.moveX + this._moveX < 100){
 					target.style.transform="translate(0px,0)";
-					this._moveDeltaX = 0;
+					this._moveX = 0;
 				}else{
-					target.style.transform="translate("+this._moveDeltaX+"px,0)";
+					target.style.transform="translate("+this._moveX+"px,0)";
 				}
 			})
 			areaSwipeX.addEventListener('swiperight',function(event){
-				console.log(event.type,event.detail.moveDeltaX);
+				console.log(event.type,event.detail.moveX);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaX + this._moveDeltaX > 100){
+				if(event.detail.moveX + this._moveX > 100){
 					target.style.transform="translate(200px,0)";
-					this._moveDeltaX = 200;
-				}else if(event.detail.moveDeltaX + this._moveDeltaX > -100){
+					this._moveX = 200;
+				}else if(event.detail.moveX + this._moveX > -100){
 					target.style.transform="translate(0px,0)";
-					this._moveDeltaX = 0;
+					this._moveX = 0;
 				}else{
-					target.style.transform="translate("+this._moveDeltaX+"px,0)";
+					target.style.transform="translate("+this._moveX+"px,0)";
 				}
 			})
 		</script>
@@ -275,38 +275,38 @@
 		</div>
 		<script>
 			let areaSwipeY = document.querySelector('#area-swipe-y');
-			areaSwipeY._moveDeltaY = 0;
+			areaSwipeY._moveY = 0;
 			areaSwipeY.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipeY.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate(0,"+(this._moveDeltaY+event.detail.moveDeltaY)+"px)";
+				target.style.transform="translate(0,"+(this._moveY+event.detail.moveY)+"px)";
 			});
 			areaSwipeY.addEventListener('swipeup',function(event){
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY);
+				console.log(event.type,event.detail.moveX,event.detail.moveY);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaY + this._moveDeltaY < -100){
+				if(event.detail.moveY + this._moveY < -100){
 					target.style.transform="translate(0,-200px)";
-					this._moveDeltaY = -200;
-				}else if(event.detail.moveDeltaY + this._moveDeltaY < 100){
+					this._moveY = -200;
+				}else if(event.detail.moveY + this._moveY < 100){
 					target.style.transform="translate(0px,0)";
-					this._moveDeltaY = 0;
+					this._moveY = 0;
 				}else{
-					target.style.transform="translate("+this._moveDeltaY+"px,0)";
+					target.style.transform="translate("+this._moveY+"px,0)";
 				}
 			})
 			areaSwipeY.addEventListener('swipedown',function(event){
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY);
+				console.log(event.type,event.detail.moveX,event.detail.moveY);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaY + this._moveDeltaY > 100){
+				if(event.detail.moveY + this._moveY > 100){
 					target.style.transform="translate(0,200px)";
-					this._moveDeltaY = 200;
-				}else if(event.detail.moveDeltaY + this._moveDeltaY > -100){
+					this._moveY = 200;
+				}else if(event.detail.moveY + this._moveY > -100){
 					target.style.transform="translate(0px,0)";
-					this._moveDeltaY = 0;
+					this._moveY = 0;
 				}else{
-					target.style.transform="translate(0,"+this._moveDeltaY+"px)";
+					target.style.transform="translate(0,"+this._moveY+"px)";
 				}
 			})
 		</script>
@@ -322,42 +322,42 @@
 		</div>
 		<script>
 			let areaSwipe = document.querySelector('#area-swipe');
-			areaSwipe._moveDeltaX = 0;
-			areaSwipe._moveDeltaY = 0;
+			areaSwipe._moveX = 0;
+			areaSwipe._moveY = 0;
 			areaSwipe.addEventListener('pointerdown',function(event){
 				event.preventDefault()
 			});
 			areaSwipe.addEventListener('custompointermove',function(event){
 				let target = this.querySelector('.event-target');
-				target.style.transform="translate("+(this._moveDeltaX+event.detail.moveDeltaX)+"px,"+(this._moveDeltaY+event.detail.moveDeltaY)+"px)";
+				target.style.transform="translate("+(this._moveX+event.detail.moveX)+"px,"+(this._moveY+event.detail.moveY)+"px)";
 			});
-			// swipe 는 custompointerup 과 거의 같다. moveDeltaX와 moveDeltaY가 0일 때 트리거 안하는 것만 차이 있다.
+			// swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
 			areaSwipe.addEventListener('swipe',function(event){
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY);
+				console.log(event.type,event.detail.moveX,event.detail.moveY);
 				let target = this.querySelector('.event-target');
-				if(event.detail.moveDeltaX + this._moveDeltaX > 100){
+				if(event.detail.moveX + this._moveX > 100){
 					// target.style.transform="translate(200px,0)";
-					this._moveDeltaX = 200;
-				}else if(event.detail.moveDeltaX + this._moveDeltaX < -100){
+					this._moveX = 200;
+				}else if(event.detail.moveX + this._moveX < -100){
 					// target.style.transform="translate(-200px,0)";
-					this._moveDeltaX = -200;
-				}else if(event.detail.moveDeltaX + this._moveDeltaX < 100){
+					this._moveX = -200;
+				}else if(event.detail.moveX + this._moveX < 100){
 					// target.style.transform="translate(0px,0)";
-					this._moveDeltaX = 0;
+					this._moveX = 0;
 				}
 
-				if(event.detail.moveDeltaY + this._moveDeltaY > 100){
+				if(event.detail.moveY + this._moveY > 100){
 					// target.style.transform="translate(200px,0)";
-					this._moveDeltaY = 200;
-				}else if(event.detail.moveDeltaY + this._moveDeltaY < -100){
+					this._moveY = 200;
+				}else if(event.detail.moveY + this._moveY < -100){
 					// target.style.transform="translate(-200px,0)";
-					this._moveDeltaY = -200;
-				}else if(event.detail.moveDeltaY + this._moveDeltaY < 100){
+					this._moveY = -200;
+				}else if(event.detail.moveY + this._moveY < 100){
 					// target.style.transform="translate(0px,0)";
-					this._moveDeltaY = 0;
+					this._moveY = 0;
 				}
 				
-				target.style.transform="translate("+this._moveDeltaX+"px,"+this._moveDeltaY+"px)";
+				target.style.transform="translate("+this._moveX+"px,"+this._moveY+"px)";
 				
 			})
 			

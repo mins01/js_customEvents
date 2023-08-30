@@ -61,7 +61,7 @@
         <hr>
 		<h2>설명</h2>
 		<ul class="list-group">
-			<li class="list-group-item">pointerdown,pointermove,pointerup 이벤트에서 x,y 의 변화량을 moveDeltaX,moveDeltaY(detail 속에)로 제공한다</li>
+			<li class="list-group-item">pointerdown,pointermove,pointerup 이벤트에서 x,y 의 변화량을 moveX,moveY(detail 속에)로 제공한다</li>
 		</ul>
 		<hr>
 		<h2>spec</h2>
@@ -82,8 +82,10 @@
 		<ul class="list-group">
 			<li class="list-group-item">target : 최초 이벤트 발생 엘레멘트</li>
 			<li class="list-group-item">event : original event</li>
-			<li class="list-group-item">moveDeltaX : x 변화량</li>
-			<li class="list-group-item">moveDeltaY : y 변화량</li>
+			<li class="list-group-item">moveX : x 이동량(down 위치 기준 move 위치로 계산)</li>
+			<li class="list-group-item">moveY : y 이동량(down 위치 기준 move 위치로 계산)</li>
+			<li class="list-group-item">moveDeltaX : x 이동 변화량 (move 발생 시 이전 move의 위치 기준)</li>
+			<li class="list-group-item">moveDeltaY : y 이동 변화량 (move 발생 시 이전 move의 위치 기준)</li>
 			<li class="list-group-item">distance : 다중 포인터 1,2번째의 거리</li>
 			<li class="list-group-item">distanceDelta : 다중 포인터 1,2번째의 거리 변화량(pinch/zoom 용)</li>
 			<li class="list-group-item">rotate : 다중 포인터 1,2번째의 각도</li>
@@ -112,33 +114,61 @@
 				<div class="event-target" id="event-target" style="left:0;top:0;">target</div>
 			</div>
 		</div>
+		<div id="text-detail" style="white-space: break-spaces;">
+
+		</div>
         
 		
 		<script>
 			let area = document.querySelector('#event-area');
+			area._scale = 1;
+			area._rotate = 0;
 			area.addEventListener('custompointerdown',function(event){
 				if(this != event.target){return false;}
 				console.log('event',event);
 				event.detail.event.preventDefault();
 				event.detail.event.stopPropagation();
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 
-				this._left = parseInt(this.style.left,10);
-				this._top = parseInt(this.style.top,10);
+				if(event.detail.event.isPrimary){
+					this._left = parseInt(this.style.left,10);
+					this._top = parseInt(this.style.top,10);
 
-				this.style.left = 	(this._left+event.detail.moveDeltaX)+'px'
-				this.style.top = 	(this._top+event.detail.moveDeltaY)+'px'
+					this.style.left = 	(this._left+event.detail.moveX)+'px'
+					this.style.top = 	(this._top+event.detail.moveY)+'px'
+				}
+				
+				
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 			area.addEventListener('custompointermove',function(event){
 				if(this != event.target){return false;}
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 
-				this.style.left = 	(this._left+event.detail.moveDeltaX)+'px'
-				this.style.top = 	(this._top+event.detail.moveDeltaY)+'px'
+				if(event.detail.pointerNumber==1){
+					this.style.left = 	(this._left+event.detail.moveX)+'px'
+					this.style.top = 	(this._top+event.detail.moveY)+'px'
+				}else if(event.detail.pointerNumber > 1){
+					let target = this.querySelector('.event-target');
+					let distanceDelta = event.detail.distanceDelta;
+					let rotateDelta = event.detail.rotateDelta;
+					this._scale = this._scale + distanceDelta/100;
+					this._rotate = this._rotate + rotateDelta
+					target.style.transform='scale(clamp(0.2,'+this._scale+',2)) rotate('+this._rotate+'rad)';
+				}
+				
+				
+
+				
+
+
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 			area.addEventListener('custompointerup',function(event){
 				if(this != event.target){return false;}
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 
 			let eventTarget = document.querySelector('#event-target');
@@ -147,21 +177,27 @@
 				event.detail.event.preventDefault();
 				event.detail.event.stopPropagation();
 				console.log('event',event);
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 				
 				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveDeltaX}px,${event.detail.moveDeltaY}px)`;
+				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
+
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 			eventTarget.addEventListener('custompointermove',function(event){
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 
 				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveDeltaX}px,${event.detail.moveDeltaY}px)`;
+				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
+
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 			eventTarget.addEventListener('custompointerup',function(event){
 				let target = event.target;
 				target.style.transform = `translate(0px,0px)`;
-				console.log(event.type,event.detail.moveDeltaX,event.detail.moveDeltaY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 		</script>
 		<div style="height:100vh"></div>

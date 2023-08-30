@@ -24,8 +24,8 @@ class CustomGestureEvent extends CustomPointerEvent{
     // static detail(event){
     //     return {
     //         target:this.target,
-    //         moveDeltaX:this.moveDeltaX,
-    //         moveDeltaY:this.moveDeltaY,
+    //         moveX:this.moveX,
+    //         moveY:this.moveY,
     //         pressedTime:this.pressedTime,
     //         event:event, // original event
     //     }
@@ -48,7 +48,7 @@ class CustomGestureEvent extends CustomPointerEvent{
     static pointermove = (event)=>{
         super.pointermove(event);
 
-        if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (this.moveDeltaX + this.moveDeltaY)){
+        if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (this.moveX + this.moveY)){
             clearTimeout(this.longPressTimeoutTm);
             this.longPressTimeoutTm = null;
         }
@@ -82,19 +82,19 @@ class CustomGestureEvent extends CustomPointerEvent{
             this.longPressTimeoutTm = null;
         }
 
-        if(this.moveDeltaX < 0){
+        if(this.moveX < 0){
             this.target.dispatchEvent((new this('swipeleft', this.options(event))));
-        }else if(this.moveDeltaX > 0){
+        }else if(this.moveX > 0){
             this.target.dispatchEvent((new this('swiperight', this.options(event))));
         }
-        if(this.moveDeltaY < 0){
+        if(this.moveY < 0){
             this.target.dispatchEvent((new this('swipeup', this.options(event))));
-        }else if(this.moveDeltaY > 0){
+        }else if(this.moveY > 0){
             this.target.dispatchEvent((new this('swipedown', this.options(event))));
         }
 
-        // event type swipe 는 custompointerup 과 거의 같다. moveDeltaX와 moveDeltaY가 0일 때 트리거 안하는 것만 차이 있다.
-        if(this.moveDeltaX || this.moveDeltaY){
+        // event type swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
+        if(this.moveX || this.moveY){
             this.target.dispatchEvent((new this('swipe', this.options(event))));
         }
     }

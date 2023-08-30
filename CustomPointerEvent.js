@@ -17,6 +17,10 @@ class CustomPointerEvent extends CustomEvent{
     static pageX1 = null; // event.pageX;
     static pageY1 = null; // event.pageY;
 
+    // 포인터 이동 증가값
+    static moveDeltaX = null;
+    static moveDeltaY = null;
+
     // 멀티 포인터 1,2 번의 거리
     static distance = null;
     static distanceDelta = 0;
@@ -26,14 +30,14 @@ class CustomPointerEvent extends CustomEvent{
     static rotateDelta = null
 
 
-    // moveDeltaX = null; // pageX1 - pageX0
-    // moveDeltaY = null; // pageY1 - pageY0
-    static get moveDeltaX(){
+    // moveX = null; // pageX1 - pageX0
+    // moveY = null; // pageY1 - pageY0
+    static get moveX(){
         if(this.pageX1 === null){ return null;}
         if(this.pageX0 === null){ return null;}
         return this.pageX1 - this.pageX0;
     }
-    static get moveDeltaY(){
+    static get moveY(){
         if(this.pageY1 === null){ return null;}
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
@@ -88,14 +92,14 @@ class CustomPointerEvent extends CustomEvent{
         return {
             target:this.target,
             event:event, // original event
-            moveDeltaX:this.moveDeltaX,
-            moveDeltaY:this.moveDeltaY,
+            moveX:this.moveX,
+            moveY:this.moveY,
             distance:this.distance,
             distanceDelta:this.distanceDelta,
             rotate:this.rotate,
             rotateDelta:this.rotateDelta,
-            pointers:this.pointers,
             pointerNumber:this.pointers.length,
+            pointers:this.pointers,
         }
     }
     static cbPointerdown = (event) =>{
@@ -105,11 +109,17 @@ class CustomPointerEvent extends CustomEvent{
         // multi pointer
         this.pointers.push(event);
 
-        this.target = event.target;
-        this.pageX0 = event.pageX;
-        this.pageY0 = event.pageY;
-        this.pageX1 = event.pageX;
-        this.pageY1 = event.pageY;
+        if(event.isPrimary){ // 기본포인터인 경우만 
+            this.target = event.target;
+            this.pageX0 = event.pageX;
+            this.pageY0 = event.pageY;
+            this.pageX1 = event.pageX;
+            this.pageY1 = event.pageY;
+    
+            this.moveDeltaX = 0;
+            this.moveDeltaY = 0;
+        }
+        
 
         if(this.pointers.length > 1){
             this.distance = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
@@ -150,9 +160,13 @@ class CustomPointerEvent extends CustomEvent{
             this.rotateDelta = rotate1-this.rotate;
             this.rotate = rotate1;
         }
+        if(event.isPrimary){ // 기본포인터인 경우만 
+            this.moveDeltaX = event.pageX - this.pageX1;
+            this.moveDeltaY = event.pageY - this.pageY1;
 
-        this.pageX1 = event.pageX;
-        this.pageY1 = event.pageY;
+            this.pageX1 = event.pageX;
+            this.pageY1 = event.pageY;
+        }
 
         this.target.dispatchEvent((new this('custompointermove', this.options(event))));
     }
@@ -160,24 +174,32 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointerup(event)
     }
     static pointerup(event){
-        this.target.dispatchEvent((new this('custompointerup', this.options(event))));
-        
-        this.distance = null;
-        this.distanceDelta = null;
+        if(event.isPrimary){
+            this.pageX0 = null;
+            this.pageY0 = null;
+            this.pageX1 = null;
+            this.pageY1 = null;
 
-        this.rotate = null;
-        this.rotateDelta = null;
-        
+            this.moveDeltaX = 0;
+            this.moveDeltaY = 0;
+        }
+
         // multi pointer
         let pointerId = this.indexOfPointers(event);
         if(pointerId >= 0) this.pointers.splice(pointerId, 1);
 
         if(this.pointers.length===0){
+            this.distance = null;
+            this.distanceDelta = null;
+    
+            this.rotate = null;
+            this.rotateDelta = null;
+
             document.removeEventListener('pointermove',this.cbPointermove);
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
         }
-        
+        this.target.dispatchEvent((new this('custompointerup', this.options(event))));
     }
 
 
@@ -185,23 +207,32 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointercancel(event)
     }
     static pointercancel(event){
-        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
-        
-        this.distance = null;
-        this.distanceDelta = null;
+        if(event.isPrimary){
+            this.pageX0 = null;
+            this.pageY0 = null;
+            this.pageX1 = null;
+            this.pageY1 = null;
 
-        this.rotate = null;
-        this.rotateDelta = null;
-        
+            this.moveDeltaX = 0;
+            this.moveDeltaY = 0;
+        }
+
         // multi pointer
         let pointerId = this.indexOfPointers(event);
         if(pointerId >= 0) this.pointers.splice(pointerId, 1);
 
         if(this.pointers.length===0){
+            this.distance = null;
+            this.distanceDelta = null;
+    
+            this.rotate = null;
+            this.rotateDelta = null;
+
             document.removeEventListener('pointermove',this.cbPointermove);
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
         }
+        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
     }
 
     /**
