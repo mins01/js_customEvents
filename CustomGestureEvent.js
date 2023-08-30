@@ -11,26 +11,6 @@ class CustomGestureEvent extends CustomPointerEvent{
     static distanceThreshold = 0.1; //0.1px // for pinch/zoom
     static rotateThreshold = 0; //0.0001rad // for rotate
 
-
-
-    // static options(event){
-    //     return { 
-    //         bubbles:this.bubbles, 
-    //         cancelable:this.cancelable, 
-    //         composed:this.composed,
-    //         detail:this.detail(event),
-    //     }
-    // }
-    // static detail(event){
-    //     return {
-    //         target:this.target,
-    //         moveX:this.moveX,
-    //         moveY:this.moveY,
-    //         pressedTime:this.pressedTime,
-    //         event:event, // original event
-    //     }
-    // }
-
     static cbPointerdown = (event) =>{
         return this.pointerdown(event)
     }
@@ -48,7 +28,7 @@ class CustomGestureEvent extends CustomPointerEvent{
     static pointermove = (event)=>{
         super.pointermove(event);
 
-        if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (this.moveX + this.moveY)){
+        if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (Math.abs(this.moveX) + Math.abs(this.moveY))){
             clearTimeout(this.longPressTimeoutTm);
             this.longPressTimeoutTm = null;
         }
@@ -74,29 +54,29 @@ class CustomGestureEvent extends CustomPointerEvent{
         return this.pointerup(event)
     }
     static pointerup = (event)=>{
-        super.pointerup(event);
-        
 
         if(this.longPressTimeoutTm){
             clearTimeout(this.longPressTimeoutTm); 
             this.longPressTimeoutTm = null;
         }
 
-        if(this.moveX < 0){
+        if(this.moveDeltaX < 0){
             this.target.dispatchEvent((new this('swipeleft', this.options(event))));
-        }else if(this.moveX > 0){
+        }else if(this.moveDeltaX > 0){
             this.target.dispatchEvent((new this('swiperight', this.options(event))));
         }
-        if(this.moveY < 0){
+        if(this.moveDeltaY < 0){
             this.target.dispatchEvent((new this('swipeup', this.options(event))));
-        }else if(this.moveY > 0){
+        }else if(this.moveDeltaY > 0){
             this.target.dispatchEvent((new this('swipedown', this.options(event))));
         }
 
         // event type swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
-        if(this.moveX || this.moveY){
+        if(this.moveDeltaX || this.moveDeltaY){
             this.target.dispatchEvent((new this('swipe', this.options(event))));
         }
+
+        super.pointerup(event);
     }
 
 

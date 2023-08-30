@@ -51,7 +51,14 @@
 			justify-content: center;
 			align-items: center;
 		}
-		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move}
+		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
 	</style>
 	
 </head>
@@ -90,8 +97,10 @@
 			<li class="list-group-item">distanceDelta : 다중 포인터 1,2번째의 거리 변화량(pinch/zoom 용)</li>
 			<li class="list-group-item">rotate : 다중 포인터 1,2번째의 각도</li>
 			<li class="list-group-item">rotateDelta : 다중 포인터 1,2번째의 각도 변화량(rotate 용)</li>
-			<li class="list-group-item">pointers : 다중 포인터 이벤트</li>
 			<li class="list-group-item">pointerNumber : 다중 포인터 이벤트 수</li>
+			<li class="list-group-item">maxPointerNumber : 최대 포인터 이벤트 수 (멀티 터치에서 싱글 터치로 변경 구분)</li>
+			<li class="list-group-item">pointers : 다중 포인터 이벤트</li>
+			
 		</ul>
 		<h3>주의</h3>
 		<ul class="list-group">
@@ -111,10 +120,10 @@
 		<hr>
 		<div class="event-area-wrap" id="event-area-wrap">
 			<div class="event-area" id="event-area" style="left:0;top:0; touch-action: none;user-select: none;">
-				<div class="event-target" id="event-target" style="left:0;top:0;">target</div>
+				<div class="event-target" id="event-target" style="left:0;top:0; pointer-events: none;">target</div>
 			</div>
 		</div>
-		<div id="text-detail" style="white-space: break-spaces;">
+		<div id="text-detail" style="white-space: break-spaces; font-size: 10px;">
 
 		</div>
         
@@ -145,22 +154,17 @@
 				if(this != event.target){return false;}
 				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
 
-				if(event.detail.pointerNumber==1){
+				if(event.detail.pointerNumber==1 && event.detail.maxPointerNumber == 1){
 					this.style.left = 	(this._left+event.detail.moveX)+'px'
 					this.style.top = 	(this._top+event.detail.moveY)+'px'
 				}else if(event.detail.pointerNumber > 1){
 					let target = this.querySelector('.event-target');
 					let distanceDelta = event.detail.distanceDelta;
 					let rotateDelta = event.detail.rotateDelta;
-					this._scale = this._scale + distanceDelta/100;
+					this._scale = Math.min(2,Math.max(0.2,this._scale + distanceDelta/100));
 					this._rotate = this._rotate + rotateDelta
-					target.style.transform='scale(clamp(0.2,'+this._scale+',2)) rotate('+this._rotate+'rad)';
+					target.style.transform='scale('+this._scale+') rotate('+this._rotate+'rad)';
 				}
-				
-				
-
-				
-
 
 				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
@@ -171,34 +175,6 @@
 				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})
 
-			let eventTarget = document.querySelector('#event-target');
-
-			eventTarget.addEventListener('custompointerdown',function(event){
-				event.detail.event.preventDefault();
-				event.detail.event.stopPropagation();
-				console.log('event',event);
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
-				
-				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
-
-				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
-			})
-			eventTarget.addEventListener('custompointermove',function(event){
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
-
-				let target = event.target;
-				target.style.transform = `translate(${event.detail.moveX}px,${event.detail.moveY}px)`;
-
-				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
-			})
-			eventTarget.addEventListener('custompointerup',function(event){
-				let target = event.target;
-				target.style.transform = `translate(0px,0px)`;
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
-
-				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
-			})
 		</script>
 		<div style="height:100vh"></div>
 	</div>

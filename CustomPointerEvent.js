@@ -3,9 +3,16 @@
  * PointerEvent 등 를 확장해서 custom event를 triger 해서 사용할 수 있게 한다.
  */
 class CustomPointerEvent extends CustomEvent{
-    static pointers = []; // 멀티 이벤트 처리용.
+    
+    
+
     static actived = false;
     static target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
+    
+    // 멀티 포인터 이벤트
+    static pointers = []; // 멀티 이벤트 처리용.
+    static maxPointerNumber = 0;
+
     // 커스텀 이벤트 옵션 값 설정
     static bubbles = true; // 이벤트 버블 가능?
     static cancelable = true; // 이벤트 취소 가능?
@@ -99,7 +106,9 @@ class CustomPointerEvent extends CustomEvent{
             rotate:this.rotate,
             rotateDelta:this.rotateDelta,
             pointerNumber:this.pointers.length,
+            maxPointerNumber:this.maxPointerNumber,
             pointers:this.pointers,
+            
         }
     }
     static cbPointerdown = (event) =>{
@@ -136,6 +145,7 @@ class CustomPointerEvent extends CustomEvent{
             this.rotate = null;
             this.rotateDelta = null;
         }
+        this.maxPointerNumber = this.pointers.length;
 
 
         this.target.dispatchEvent((new this('custompointerdown', this.options(event))));
@@ -174,6 +184,8 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointerup(event)
     }
     static pointerup(event){
+        this.target.dispatchEvent((new this('custompointerup', this.options(event))));
+
         if(event.isPrimary){
             this.pageX0 = null;
             this.pageY0 = null;
@@ -195,11 +207,13 @@ class CustomPointerEvent extends CustomEvent{
             this.rotate = null;
             this.rotateDelta = null;
 
+            this.maxPointerNumber = 0;
+
             document.removeEventListener('pointermove',this.cbPointermove);
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
         }
-        this.target.dispatchEvent((new this('custompointerup', this.options(event))));
+        
     }
 
 
@@ -207,6 +221,8 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointercancel(event)
     }
     static pointercancel(event){
+        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
+
         if(event.isPrimary){
             this.pageX0 = null;
             this.pageY0 = null;
@@ -228,11 +244,12 @@ class CustomPointerEvent extends CustomEvent{
             this.rotate = null;
             this.rotateDelta = null;
 
+            this.maxPointerNumber = 0;
+
             document.removeEventListener('pointermove',this.cbPointermove);
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
         }
-        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
     }
 
     /**
