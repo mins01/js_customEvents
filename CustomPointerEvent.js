@@ -28,6 +28,7 @@ class CustomPointerEvent extends CustomEvent{
     // 포인터 이동 증가값
     static moveDeltaX = null;
     static moveDeltaY = null;
+    static moveDelta = null;
 
     // 멀티 포인터 1,2 번의 거리
     static distanceBetween = null;
@@ -40,6 +41,9 @@ class CustomPointerEvent extends CustomEvent{
     // 이동 속도
     static velocityX = null; // px / sec
     static velocityY = null; // px / sec
+    static velocity = null; // px / sec
+
+    static duration = null; // ms
 
 
     // moveX = null; // pageX1 - pageX0
@@ -55,13 +59,11 @@ class CustomPointerEvent extends CustomEvent{
         return this.pageY1 - this.pageY0;
     }
     static get moveDistance(){
-        let moveX = this.moveX();
-        let moveY = this.moveY();
         if(this.moveX === null){ return null;}
         if(this.moveY === null){ return null;}
         return Math.sqrt(Math.pow(this.moveX,2) + Math.pow(this.moveY,2));
     }
-    moveDistance
+    
 
     // static get distanceBetweenDelta(){ // 간격 변화량
     //     if(this.distanceBetween1 === null){ return null;}
@@ -117,8 +119,10 @@ class CustomPointerEvent extends CustomEvent{
             moveX:this.moveX,
             moveY:this.moveY,
             moveDistance:this.moveDistance,
+            duration:this.duration,
             velocityX:this.velocityX,
             velocityY:this.velocityY,
+            velocity:this.velocity,
             distanceBetween:this.distanceBetween,
             distanceBetweenDelta:this.distanceBetweenDelta,
             rotate:this.rotate,
@@ -138,6 +142,9 @@ class CustomPointerEvent extends CustomEvent{
 
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.target = event.target;
+            this.firstTimeStamp = event.timeStamp;
+            this.duration = event.timeStamp - this.firstTimeStamp;
+
             this.pageX0 = event.pageX;
             this.pageY0 = event.pageY;
             this.pageX1 = event.pageX;
@@ -145,10 +152,12 @@ class CustomPointerEvent extends CustomEvent{
     
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
+            this.moveDelta = 0;
+            
 
             this.velocityX = 0;
             this.velocityY = 0;
-            this.firstTimeStamp = this.pointers[0].timeStamp;
+            this.velocity = 0;
         }
         
 
@@ -193,14 +202,18 @@ class CustomPointerEvent extends CustomEvent{
             this.rotate = rotate1;
         }
         if(event.isPrimary){ // 기본포인터인 경우만 
+            this.duration = event.timeStamp - this.firstTimeStamp;
+
             this.moveDeltaX = event.pageX - this.pageX1;
             this.moveDeltaY = event.pageY - this.pageY1;
+            this.moveDelta = Math.sqrt(Math.pow(this.moveDeltaX,2) + Math.pow(this.moveDeltaY,2))
 
             this.pageX1 = event.pageX;
             this.pageY1 = event.pageY;
 
-            this.velocityX = Math.abs(this.moveX) / (this.pointers[0].timeStamp - this.firstTimeStamp) * 1000;
-            this.velocityY = Math.abs(this.moveY) / (this.pointers[0].timeStamp - this.firstTimeStamp) * 1000;
+            this.velocityX = Math.abs(this.moveX) / this.duration * 1000;
+            this.velocityY = Math.abs(this.moveY) / this.duration * 1000;
+            this.velocity = Math.abs(this.moveDistance) / this.duration * 1000;
         }
 
         this.target.dispatchEvent((new this('custompointermove', this.options(event))));
@@ -212,6 +225,7 @@ class CustomPointerEvent extends CustomEvent{
         this.target.dispatchEvent((new this('custompointerup', this.options(event))));
 
         if(event.isPrimary){
+            this.duration = 0;
             this.pageX0 = null;
             this.pageY0 = null;
             this.pageX1 = null;
@@ -219,9 +233,11 @@ class CustomPointerEvent extends CustomEvent{
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
+            this.moveDelta = 0;
 
             this.velocityX = 0;
             this.velocityY = 0;
+            this.velocity = 0;
         }
 
         // multi pointer
@@ -259,9 +275,11 @@ class CustomPointerEvent extends CustomEvent{
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
+            this.moveDelta = 0;
 
             this.velocityX = 0;
             this.velocityY = 0;
+            this.velocity = 0;
         }
 
         // multi pointer
@@ -286,7 +304,7 @@ class CustomPointerEvent extends CustomEvent{
     /**
      * 
      */
-    constructor(typeArg,options,detail){
+    constructor(typeArg,options){
         super(typeArg,options);
     }
 }
