@@ -8,7 +8,11 @@ class CustomGestureEvent extends CustomPointerEvent{
     static longPressCancelThreshold = 10; //100px
     static longPressTimeoutTm = null; //
 
-    static distanceThreshold = 0.1; //0.1px // for pinch/zoom
+    // swipe 
+    static swipeVelocityThreshold = 300; // px / sec
+
+    // pinch/zoom
+    static pinchZoomDistanceThreshold = 0.1; //0.1px // for pinch/zoom
     static rotateThreshold = 0; //0.0001rad // for rotate
 
     static cbPointerdown = (event) =>{
@@ -31,10 +35,12 @@ class CustomGestureEvent extends CustomPointerEvent{
         if(this.longPressTimeoutTm && this.longPressCancelThreshold <= (Math.abs(this.moveX) + Math.abs(this.moveY))){
             clearTimeout(this.longPressTimeoutTm);
             this.longPressTimeoutTm = null;
+            this.target.dispatchEvent((new this('longpresscancel', this.options(event,'move < longPressCancelThreshold'))));
+
         }
 
         if(this.distanceDelta){
-            if(Math.abs(this.distanceDelta) >= this.distanceThreshold){
+            if(Math.abs(this.distanceDelta) >= this.pinchZoomDistanceThreshold){
                 if(this.distanceDelta < 0){
                     this.target.dispatchEvent((new this('pinch', this.options(event))));
                 }else if(this.distanceDelta > 0){
@@ -61,19 +67,41 @@ class CustomGestureEvent extends CustomPointerEvent{
         }
 
         if(this.moveDeltaX < 0){
-            this.target.dispatchEvent((new this('swipeleft', this.options(event))));
+            if(this.velocityX < this.swipeVelocityThreshold){
+                this.target.dispatchEvent((new this('swipeleftcancel', this.options(event,'velocityX < swipeVelocityThreshold'))));
+            }else{
+                this.target.dispatchEvent((new this('swipeleft', this.options(event))));
+            }
+            
         }else if(this.moveDeltaX > 0){
-            this.target.dispatchEvent((new this('swiperight', this.options(event))));
+            if(this.velocityX < this.swipeVelocityThreshold){
+                console.log(this.options(event,'velocityX < swipeVelocityThreshold'));
+                this.target.dispatchEvent((new this('swiperightcancel', this.options(event,'velocityX < swipeVelocityThreshold'))));
+            }else{
+                this.target.dispatchEvent((new this('swiperight', this.options(event))));
+            }
         }
         if(this.moveDeltaY < 0){
-            this.target.dispatchEvent((new this('swipeup', this.options(event))));
+            if(this.velocityY < this.swipeVelocityThreshold){
+                this.target.dispatchEvent((new this('swipeupcancel', this.options(event,'velocityY < swipeVelocityThreshold'))));
+            }else{
+                this.target.dispatchEvent((new this('swipeup', this.options(event))));
+            }
         }else if(this.moveDeltaY > 0){
-            this.target.dispatchEvent((new this('swipedown', this.options(event))));
+            if(this.velocityY < this.swipeVelocityThreshold){
+                this.target.dispatchEvent((new this('swipedowncancel', this.options(event,'velocityY < swipeVelocityThreshold'))));
+            }else{
+                this.target.dispatchEvent((new this('swipedown', this.options(event))));
+            }
         }
 
         // event type swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
         if(this.moveDeltaX || this.moveDeltaY){
-            this.target.dispatchEvent((new this('swipe', this.options(event))));
+            if(this.velocityY <= this.swipeVelocityThreshold){
+                this.target.dispatchEvent((new this('swipecancel', this.options(event,'velocityY < swipeVelocityThreshold'))));
+            }else{
+                this.target.dispatchEvent((new this('swipe', this.options(event))));
+            }
         }
 
         super.pointerup(event);

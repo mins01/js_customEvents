@@ -8,6 +8,7 @@ class CustomPointerEvent extends CustomEvent{
 
     static actived = false;
     static target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
+    static firstTimeStamp = null; // 최초 이벤트의 timeStamp
     
     // 멀티 포인터 이벤트
     static pointers = []; // 멀티 이벤트 처리용.
@@ -29,12 +30,16 @@ class CustomPointerEvent extends CustomEvent{
     static moveDeltaY = null;
 
     // 멀티 포인터 1,2 번의 거리
-    static distance = null;
-    static distanceDelta = 0;
+    static distanceBetween = null;
+    static distanceBetweenDelta = 0;
 
     // 멀티포인트 1,2 번의 각도 rad
     static rotate = null
     static rotateDelta = null
+
+    // 이동 속도
+    static velocityX = null; // px / sec
+    static velocityY = null; // px / sec
 
 
     // moveX = null; // pageX1 - pageX0
@@ -49,10 +54,19 @@ class CustomPointerEvent extends CustomEvent{
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
     }
-    // static get distanceDelta(){ // 간격 변화량
-    //     if(this.distance1 === null){ return null;}
-    //     if(this.distance === null){ return null;}
-    //     return this.distance1 - this.distance;
+    static get moveDistance(){
+        let moveX = this.moveX();
+        let moveY = this.moveY();
+        if(this.moveX === null){ return null;}
+        if(this.moveY === null){ return null;}
+        return Math.sqrt(Math.pow(this.moveX,2) + Math.pow(this.moveY,2));
+    }
+    moveDistance
+
+    // static get distanceBetweenDelta(){ // 간격 변화량
+    //     if(this.distanceBetween1 === null){ return null;}
+    //     if(this.distanceBetween === null){ return null;}
+    //     return this.distanceBetween1 - this.distanceBetween;
     // }
 
     static indexOfPointers(event){
@@ -87,22 +101,26 @@ class CustomPointerEvent extends CustomEvent{
         globalThis.window.removeEventListener('pointerdown',this.cbPointerdown);
     }
 
-    static options(event){
+    static options(event,message){
         return { 
             bubbles:this.bubbles, 
             cancelable:this.cancelable, 
             composed:this.composed,
-            detail:this.detail(event),
+            detail:this.detail(event,message),
         }
     }
-    static detail(event){
+    static detail(event,message){
         return {
             target:this.target,
             event:event, // original event
+            message:message,
             moveX:this.moveX,
             moveY:this.moveY,
-            distance:this.distance,
-            distanceDelta:this.distanceDelta,
+            moveDistance:this.moveDistance,
+            velocityX:this.velocityX,
+            velocityY:this.velocityY,
+            distanceBetween:this.distanceBetween,
+            distanceBetweenDelta:this.distanceBetweenDelta,
             rotate:this.rotate,
             rotateDelta:this.rotateDelta,
             pointerNumber:this.pointers.length,
@@ -127,20 +145,24 @@ class CustomPointerEvent extends CustomEvent{
     
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
+
+            this.velocityX = 0;
+            this.velocityY = 0;
+            this.firstTimeStamp = this.pointers[0].timeStamp;
         }
         
 
         if(this.pointers.length > 1){
-            this.distance = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
-            const distance1 = this.distance;
-            this.distanceDelta = distance1-this.distance;
+            this.distanceBetween = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            const distanceBetween1 = this.distanceBetween;
+            this.distanceBetweenDelta = distanceBetween1-this.distanceBetween;
 
             this.rotate = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
             const rotate1 = this.rotate;
             this.rotateDelta = rotate1-this.rotate0;
         }else{
-            this.distance = null;
-            this.distanceDelta = null;
+            this.distanceBetween = null;
+            this.distanceBetweenDelta = null;
 
             this.rotate = null;
             this.rotateDelta = null;
@@ -162,9 +184,9 @@ class CustomPointerEvent extends CustomEvent{
         let pointerId = this.indexOfPointers(event);
         if(pointerId > -1) this.pointers[pointerId] = event;
         if(this.pointers.length > 1){
-            const distance1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
-            this.distanceDelta = distance1-this.distance;
-            this.distance = distance1;
+            const distanceBetween1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            this.distanceBetweenDelta = distanceBetween1-this.distanceBetween;
+            this.distanceBetween = distanceBetween1;
 
             const rotate1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
             this.rotateDelta = rotate1-this.rotate;
@@ -176,6 +198,9 @@ class CustomPointerEvent extends CustomEvent{
 
             this.pageX1 = event.pageX;
             this.pageY1 = event.pageY;
+
+            this.velocityX = Math.abs(this.moveX) / (this.pointers[0].timeStamp - this.firstTimeStamp) * 1000;
+            this.velocityY = Math.abs(this.moveY) / (this.pointers[0].timeStamp - this.firstTimeStamp) * 1000;
         }
 
         this.target.dispatchEvent((new this('custompointermove', this.options(event))));
@@ -194,6 +219,9 @@ class CustomPointerEvent extends CustomEvent{
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
+
+            this.velocityX = 0;
+            this.velocityY = 0;
         }
 
         // multi pointer
@@ -201,8 +229,8 @@ class CustomPointerEvent extends CustomEvent{
         if(pointerId >= 0) this.pointers.splice(pointerId, 1);
 
         if(this.pointers.length===0){
-            this.distance = null;
-            this.distanceDelta = null;
+            this.distanceBetween = null;
+            this.distanceBetweenDelta = null;
     
             this.rotate = null;
             this.rotateDelta = null;
@@ -231,6 +259,9 @@ class CustomPointerEvent extends CustomEvent{
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
+
+            this.velocityX = 0;
+            this.velocityY = 0;
         }
 
         // multi pointer
@@ -238,8 +269,8 @@ class CustomPointerEvent extends CustomEvent{
         if(pointerId >= 0) this.pointers.splice(pointerId, 1);
 
         if(this.pointers.length===0){
-            this.distance = null;
-            this.distanceDelta = null;
+            this.distanceBetween = null;
+            this.distanceBetweenDelta = null;
     
             this.rotate = null;
             this.rotateDelta = null;
