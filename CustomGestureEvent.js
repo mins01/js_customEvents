@@ -13,7 +13,7 @@ class CustomGestureEvent extends CustomPointerEvent{
     static swipeDistanceThreshold = 100; // px
 
     // pinch/zoom
-    static pinchZoomDistanceThreshold = 0.1; //0.1px // for pinch/zoom
+    static pinchZoomDistanceBetweenDeltaThreshold = 0.1; //0.1px // for pinch/zoom
     static rotateThreshold = 0; //0.0001rad // for rotate
 
     static cbPointerdown = (event) =>{
@@ -40,11 +40,11 @@ class CustomGestureEvent extends CustomPointerEvent{
 
         }
 
-        if(this.distanceDelta){
-            if(Math.abs(this.distanceDelta) >= this.pinchZoomDistanceThreshold){
-                if(this.distanceDelta < 0){
+        if(this.distanceBetweenDelta){
+            if(Math.abs(this.distanceBetweenDelta) >= this.pinchZoomDistanceBetweenDeltaThreshold){
+                if(this.distanceBetweenDelta < 0){
                     this.target.dispatchEvent((new this('pinch', this.options(event))));
-                }else if(this.distanceDelta > 0){
+                }else if(this.distanceBetweenDelta > 0){
                     this.target.dispatchEvent((new this('zoom', this.options(event))));
                 }
             }
