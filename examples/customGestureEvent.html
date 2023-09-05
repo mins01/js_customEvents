@@ -43,6 +43,7 @@
 		CustomGestureEvent.active();
 	</script>
 	<style>
+		*{word-break: break-all;}
 		.event-area-wrap{position: relative;margin:20px auto;  }
 		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;;
 			display: flex;
@@ -85,49 +86,51 @@
 		<h2>SPECIFICATION</h2>
 		<hr>
 		<h3>event type</h3>
-		<table class="table table-sm table-bordered" style="table-layout: fixed;">
-			<thead>
-				<th width="100">pointer event</th>
-				<th width="100">pointerdown</th>
-				<th width="100">pointermove</th>
-				<th width="100">pointerup</th>
-				<th width="100">pointercancel</th>
-			</thead>
-			<tbody>
-				<tr>
-					<th width="100">custom pointer event</th>
-					<td width="100">custompointerdown</td>
-					<td width="100">custompointermove</td>
-					<td width="100">custompointerup</td>
-					<td width="100">custompointercancel</td>
-				</tr>
-				<tr>
-					<th width="100" rowspan="4">custom gesture event</th>
-					<td width="100">longpress</td>
-					<td width="100">longpresscancel</td>
-					<td width="100"></td>
-					<td width="100"></td>
-				</tr>
-				<tr>
-					<td width="100"></td>
-					<td width="100"></td>
-					<td width="100">swipe, swipeleft, swiperight, swipeup, swipedown</td>
-					<td width="100">swipecacnel, swipeleftcacnel, swiperightcacnel, swipeupcacnel, swipedowncacnel</td>
-				</tr>
-				<tr>
-					<td width="100"></td>
-					<td width="100">pinch, zoom, pinchzoom</td>
-					<td width="100"></td>
-					<td width="100"></td>
-				</tr>
-				<tr>
-					<td width="100"></td>
-					<td width="100">rotate</td>
-					<td width="100"></td>
-					<td width="100"></td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-sm table-bordered" style="table-layout: fixed;">
+				<thead>
+					<th width="100">pointer event</th>
+					<th width="100">pointerdown</th>
+					<th width="100">pointermove</th>
+					<th width="100">pointerup</th>
+					<th width="100">pointercancel</th>
+				</thead>
+				<tbody>
+					<tr>
+						<th width="100">custom pointer event</th>
+						<td width="100">custompointerdown</td>
+						<td width="100">custompointermove</td>
+						<td width="100">custompointerup</td>
+						<td width="100">custompointercancel</td>
+					</tr>
+					<tr>
+						<th width="100" rowspan="4">custom gesture event</th>
+						<td width="100">longpress</td>
+						<td width="100">longpresscancel</td>
+						<td width="100"></td>
+						<td width="100"></td>
+					</tr>
+					<tr>
+						<td width="100"></td>
+						<td width="100"></td>
+						<td width="100">swipe, swipeleft, swiperight, swipeup, swipedown</td>
+						<td width="100">swipecacnel, swipeleftcacnel, swiperightcacnel, swipeupcacnel, swipedowncacnel</td>
+					</tr>
+					<tr>
+						<td width="100"></td>
+						<td width="100">pinch, zoom, pinchzoom</td>
+						<td width="100"></td>
+						<td width="100"></td>
+					</tr>
+					<tr>
+						<td width="100"></td>
+						<td width="100">rotate</td>
+						<td width="100"></td>
+						<td width="100"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 		<h3>event static property</h3>
 		<ul class="list-group">
@@ -320,7 +323,7 @@
 			let areaPinchZoom = document.querySelector('#area-pinchzoom');
 			areaPinchZoom._scale = 1;
 			areaPinchZoom.addEventListener('pinch',function(event){
-				console.log(event.type,event.detail.distanceBetweenDelta);
+				console.log(event.type,event.detail.distanceBetweenDelta,event.detail.distanceBetween);
 				let target = this.querySelector('.event-target');
 				let distanceDelta = event.detail.distanceBetweenDelta;
 
@@ -329,7 +332,7 @@
 				target.style.transform='scale('+this._scale+')';
 			});
 			areaPinchZoom.addEventListener('zoom',function(event){
-				console.log(event.type,event.detail.distanceBetweenDelta);
+				console.log(event.type,event.detail.distanceBetweenDelta,event.detail.distanceBetween);
 				let target = this.querySelector('.event-target');
 				let distanceDelta = event.detail.distanceBetweenDelta;
 				if(Math.abs(distanceDelta)<0.1) return;
@@ -338,7 +341,7 @@
 				target.style.transform='scale('+this._scale+')';
 			});
 			areaPinchZoom.addEventListener('pinchzoom',function(event){
-				console.log(event.type,event.detail.distanceBetweenDelta);
+				console.log(event.type,event.detail.distanceBetweenDelta,event.detail.distanceBetween);
 			});
 			
 		</script>
@@ -355,14 +358,14 @@
 		</div>
 		<script>
 			let areaRotate = document.querySelector('#area-rotate');
-			areaRotate._rotate = 0;
+			areaRotate._angle = 0;
 			areaRotate.addEventListener('rotate',function(event){
-				console.log(event.type,event.detail.rotateDelta);
+				console.log(event.type,event.detail.angleBetweenDelta,event.detail.angleBetween);
 				let target = this.querySelector('.event-target');
-				let rotateDelta = event.detail.rotateDelta;
+				let angleBetweenDelta = event.detail.angleBetweenDelta;
 				// console.log(event.detail.rotate);
-				this._rotate = this._rotate + rotateDelta
-				target.style.transform='rotate('+this._rotate+'rad)';
+				this._angle = this._angle + angleBetweenDelta
+				target.style.transform='rotate('+this._angle+'rad)';
 				
 			});
 		</script>

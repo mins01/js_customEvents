@@ -28,15 +28,15 @@ class CustomPointerEvent extends CustomEvent{
     // 포인터 이동 증가값
     static moveDeltaX = null;
     static moveDeltaY = null;
-    static moveDelta = null;
+    static moveDistanceDelta = null;
 
     // 멀티 포인터 1,2 번의 거리
     static distanceBetween = null;
-    static distanceBetweenDelta = 0;
+    static distanceBetweenDelta = null;
 
     // 멀티포인트 1,2 번의 각도 rad
-    static rotate = null
-    static rotateDelta = null
+    static angleBetween = null
+    static angleBetweenDelta = null
 
     // 이동 속도
     static velocityX = null; // px / sec
@@ -119,14 +119,18 @@ class CustomPointerEvent extends CustomEvent{
             moveX:this.moveX,
             moveY:this.moveY,
             moveDistance:this.moveDistance,
+            moveDeltaX:this.moveDeltaX,
+            moveDeltaY:this.moveDeltaY,
+            moveDistanceDelta:this.moveDistanceDelta,
+
             duration:this.duration,
             velocityX:this.velocityX,
             velocityY:this.velocityY,
             velocity:this.velocity,
             distanceBetween:this.distanceBetween,
             distanceBetweenDelta:this.distanceBetweenDelta,
-            rotate:this.rotate,
-            rotateDelta:this.rotateDelta,
+            angleBetween:this.angleBetween,
+            angleBetweenDelta:this.angleBetweenDelta,
             pointerNumber:this.pointers.length,
             maxPointerNumber:this.maxPointerNumber,
             pointers:this.pointers,
@@ -152,7 +156,7 @@ class CustomPointerEvent extends CustomEvent{
     
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
-            this.moveDelta = 0;
+            this.moveDistanceDelta = 0;
             
 
             this.velocityX = 0;
@@ -166,15 +170,15 @@ class CustomPointerEvent extends CustomEvent{
             const distanceBetween1 = this.distanceBetween;
             this.distanceBetweenDelta = distanceBetween1-this.distanceBetween;
 
-            this.rotate = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
-            const rotate1 = this.rotate;
-            this.rotateDelta = rotate1-this.rotate0;
+            const angleBetween1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
+            this.angleBetween = angleBetween1;
+            this.angleBetweenDelta = angleBetween1 - this.angleBetween;
         }else{
             this.distanceBetween = null;
             this.distanceBetweenDelta = null;
 
-            this.rotate = null;
-            this.rotateDelta = null;
+            this.angleBetween = null;
+            this.angleBetweenDelta = null;
         }
         this.maxPointerNumber = this.pointers.length;
 
@@ -197,16 +201,16 @@ class CustomPointerEvent extends CustomEvent{
             this.distanceBetweenDelta = distanceBetween1-this.distanceBetween;
             this.distanceBetween = distanceBetween1;
 
-            const rotate1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
-            this.rotateDelta = rotate1-this.rotate;
-            this.rotate = rotate1;
+            const angleBetween1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
+            this.angleBetweenDelta = angleBetween1 - this.angleBetween;
+            this.angleBetween = angleBetween1;
         }
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.duration = event.timeStamp - this.firstTimeStamp;
 
             this.moveDeltaX = event.pageX - this.pageX1;
             this.moveDeltaY = event.pageY - this.pageY1;
-            this.moveDelta = Math.sqrt(Math.pow(this.moveDeltaX,2) + Math.pow(this.moveDeltaY,2))
+            this.moveDistanceDelta = Math.sqrt(Math.pow(this.moveDeltaX,2) + Math.pow(this.moveDeltaY,2))
 
             this.pageX1 = event.pageX;
             this.pageY1 = event.pageY;
@@ -233,7 +237,7 @@ class CustomPointerEvent extends CustomEvent{
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
-            this.moveDelta = 0;
+            this.moveDistanceDelta = 0;
 
             this.velocityX = 0;
             this.velocityY = 0;
@@ -248,8 +252,8 @@ class CustomPointerEvent extends CustomEvent{
             this.distanceBetween = null;
             this.distanceBetweenDelta = null;
     
-            this.rotate = null;
-            this.rotateDelta = null;
+            this.angleBetween = null;
+            this.angleBetweenDelta = null;
 
             this.maxPointerNumber = 0;
 
@@ -275,7 +279,7 @@ class CustomPointerEvent extends CustomEvent{
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
-            this.moveDelta = 0;
+            this.moveDistanceDelta = 0;
 
             this.velocityX = 0;
             this.velocityY = 0;
@@ -290,8 +294,8 @@ class CustomPointerEvent extends CustomEvent{
             this.distanceBetween = null;
             this.distanceBetweenDelta = null;
     
-            this.rotate = null;
-            this.rotateDelta = null;
+            this.angleBetween = null;
+            this.angleBetweenDelta = null;
 
             this.maxPointerNumber = 0;
 

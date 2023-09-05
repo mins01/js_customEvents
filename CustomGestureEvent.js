@@ -14,7 +14,7 @@ class CustomGestureEvent extends CustomPointerEvent{
 
     // pinch/zoom
     static pinchZoomDistanceBetweenDeltaThreshold = 0.1; //0.1px // for pinch/zoom
-    static rotateThreshold = 0; //0.0001rad // for rotate
+    static rotateAngleBetweenThreshold = 0; //0.0001rad // for rotate
 
     static cbPointerdown = (event) =>{
         return this.pointerdown(event)
@@ -51,8 +51,8 @@ class CustomGestureEvent extends CustomPointerEvent{
             this.target.dispatchEvent((new this('pinchzoom', this.options(event))));
         }
 
-        if(this.rotateDelta){
-            if(Math.abs(this.rotateDelta) >= this.rotateThreshold){
+        if(this.angleBetweenDelta){
+            if(Math.abs(this.angleBetweenDelta) >= this.rotateAngleBetweenThreshold){
                 this.target.dispatchEvent((new this('rotate', this.options(event))));
             }
         }
@@ -96,7 +96,7 @@ class CustomGestureEvent extends CustomPointerEvent{
         }
 
         // event type swipe 는 custompointerup 과 거의 같다. moveX와 moveY가 0일 때 트리거 안하는 것만 차이 있다.
-        if(this.moveDelta){
+        if(this.moveDistanceDelta){
             if(this.moveDistance < this.swipeDistanceThreshold){
                 this.target.dispatchEvent((new this('swipecancel', this.options(event,'moveDistance < swipeDistanceThreshold'))));
             }else if(this.velocity < this.swipeVelocityThreshold){
