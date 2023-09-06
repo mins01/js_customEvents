@@ -25,18 +25,21 @@ class CustomPointerEvent extends CustomEvent{
     static pageX1 = null; // event.pageX;
     static pageY1 = null; // event.pageY;
 
+    // 포인터 이동 값
+    static moveDistance = null;
+
     // 포인터 이동 증가값
-    static moveDeltaX = null;
-    static moveDeltaY = null;
-    static moveDistanceDelta = null;
+    static moveDeltaX = 0;
+    static moveDeltaY = 0;
+    static moveDistanceDelta = 0;
 
     // 멀티 포인터 1,2 번의 거리
     static distanceBetween = null;
-    static distanceBetweenDelta = null;
+    static distanceBetweenDelta = 0;
 
     // 멀티포인트 1,2 번의 각도 rad
     static angleBetween = null
-    static angleBetweenDelta = null
+    static angleBetweenDelta = 0
 
     // 이동 속도
     static velocityX = null; // px / sec
@@ -58,18 +61,6 @@ class CustomPointerEvent extends CustomEvent{
         if(this.pageY0 === null){ return null;}
         return this.pageY1 - this.pageY0;
     }
-    static get moveDistance(){
-        if(this.moveX === null){ return null;}
-        if(this.moveY === null){ return null;}
-        return Math.sqrt(Math.pow(this.moveX,2) + Math.pow(this.moveY,2));
-    }
-    
-
-    // static get distanceBetweenDelta(){ // 간격 변화량
-    //     if(this.distanceBetween1 === null){ return null;}
-    //     if(this.distanceBetween === null){ return null;}
-    //     return this.distanceBetween1 - this.distanceBetween;
-    // }
 
     static indexOfPointers(event){
         for(let i=0,m=this.pointers.length;i<m;i++){
@@ -144,6 +135,7 @@ class CustomPointerEvent extends CustomEvent{
         // multi pointer
         this.pointers.push(event);
 
+        // primary pointer
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.target = event.target;
             this.firstTimeStamp = event.timeStamp;
@@ -153,11 +145,13 @@ class CustomPointerEvent extends CustomEvent{
             this.pageY0 = event.pageY;
             this.pageX1 = event.pageX;
             this.pageY1 = event.pageY;
-    
+            
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
-            this.moveDistanceDelta = 0;
             
+            const moveDistance1 = Math.sqrt(Math.pow(this.moveX,2) + Math.pow(this.moveY,2));
+            this.moveDistance = moveDistance1;
+            this.moveDistanceDelta = moveDistance1 - this.moveDistance;
 
             this.velocityX = 0;
             this.velocityY = 0;
@@ -166,8 +160,8 @@ class CustomPointerEvent extends CustomEvent{
         
 
         if(this.pointers.length > 1){
-            this.distanceBetween = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
-            const distanceBetween1 = this.distanceBetween;
+            const distanceBetween1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            this.distanceBetween = distanceBetween1;
             this.distanceBetweenDelta = distanceBetween1-this.distanceBetween;
 
             const angleBetween1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
@@ -175,12 +169,12 @@ class CustomPointerEvent extends CustomEvent{
             this.angleBetweenDelta = angleBetween1 - this.angleBetween;
         }else{
             this.distanceBetween = null;
-            this.distanceBetweenDelta = null;
+            this.distanceBetweenDelta = 0;
 
             this.angleBetween = null;
-            this.angleBetweenDelta = null;
+            this.angleBetweenDelta = 0;
         }
-        this.maxPointerNumber = this.pointers.length;
+        this.maxPointerNumber = Math.max(this.pointers.length,this.maxPointerNumber);
 
 
         this.target.dispatchEvent((new this('custompointerdown', this.options(event))));
@@ -193,24 +187,16 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointermove(event)
     }
     static pointermove(event){
-        // multi pointer
-        let pointerId = this.indexOfPointers(event);
-        if(pointerId > -1) this.pointers[pointerId] = event;
-        if(this.pointers.length > 1){
-            const distanceBetween1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
-            this.distanceBetweenDelta = distanceBetween1-this.distanceBetween;
-            this.distanceBetween = distanceBetween1;
-
-            const angleBetween1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
-            this.angleBetweenDelta = angleBetween1 - this.angleBetween;
-            this.angleBetween = angleBetween1;
-        }
+        // primary pointer
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.duration = event.timeStamp - this.firstTimeStamp;
 
             this.moveDeltaX = event.pageX - this.pageX1;
             this.moveDeltaY = event.pageY - this.pageY1;
-            this.moveDistanceDelta = Math.sqrt(Math.pow(this.moveDeltaX,2) + Math.pow(this.moveDeltaY,2))
+
+            const moveDistance1 = Math.sqrt(Math.pow(this.moveX,2) + Math.pow(this.moveY,2));;
+            this.moveDistanceDelta = moveDistance1 - this.moveDistance;
+            this.moveDistance = moveDistance1;
 
             this.pageX1 = event.pageX;
             this.pageY1 = event.pageY;
@@ -220,20 +206,41 @@ class CustomPointerEvent extends CustomEvent{
             this.velocity = Math.abs(this.moveDistance) / this.duration * 1000;
         }
 
+        // multi pointer
+        let pointerId = this.indexOfPointers(event);
+        if(pointerId > -1) this.pointers[pointerId] = event;
+        if(this.pointers.length > 1){
+            const distanceBetween1 = Math.sqrt(Math.pow(this.pointers[1].pageX - this.pointers[0].pageX,2) + Math.pow(this.pointers[1].pageY - this.pointers[0].pageY,2))
+            this.distanceBetweenDelta = distanceBetween1 - this.distanceBetween;
+            this.distanceBetween = distanceBetween1;
+
+            const angleBetween1 = Math.atan2(this.pointers[1].pageY - this.pointers[0].pageY,this.pointers[1].pageX - this.pointers[0].pageX);
+            this.angleBetweenDelta = angleBetween1 - this.angleBetween;
+            this.angleBetween = angleBetween1;
+        }else{
+            this.distanceBetween = null;
+            this.distanceBetweenDelta = 0;
+    
+            this.angleBetween = null;
+            this.angleBetweenDelta = 0;
+        }
+
         this.target.dispatchEvent((new this('custompointermove', this.options(event))));
     }
     static cbPointerup = (event) =>{
         return this.pointerup(event)
     }
     static pointerup(event){
-        this.target.dispatchEvent((new this('custompointerup', this.options(event))));
 
+        // primary pointer
         if(event.isPrimary){
             this.duration = 0;
             this.pageX0 = null;
             this.pageY0 = null;
             this.pageX1 = null;
             this.pageY1 = null;
+
+            this.moveDistance = null;
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
@@ -250,10 +257,10 @@ class CustomPointerEvent extends CustomEvent{
 
         if(this.pointers.length===0){
             this.distanceBetween = null;
-            this.distanceBetweenDelta = null;
+            this.distanceBetweenDelta = 0;
     
             this.angleBetween = null;
-            this.angleBetweenDelta = null;
+            this.angleBetweenDelta = 0;
 
             this.maxPointerNumber = 0;
 
@@ -261,6 +268,9 @@ class CustomPointerEvent extends CustomEvent{
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
         }
+
+        this.target.dispatchEvent((new this('custompointerup', this.options(event))));
+
         
     }
 
@@ -269,13 +279,15 @@ class CustomPointerEvent extends CustomEvent{
         return this.pointercancel(event)
     }
     static pointercancel(event){
-        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
 
+        // primary pointer
         if(event.isPrimary){
             this.pageX0 = null;
             this.pageY0 = null;
             this.pageX1 = null;
             this.pageY1 = null;
+
+            this.moveDistance = null;
 
             this.moveDeltaX = 0;
             this.moveDeltaY = 0;
@@ -303,6 +315,9 @@ class CustomPointerEvent extends CustomEvent{
             document.removeEventListener('pointerup',this.cbPointerup);
             document.removeEventListener('pointercancel',this.cbPointercancel);
         }
+
+        event.target.dispatchEvent((new this('custompointercancel', this.options(event))));
+
     }
 
     /**

@@ -95,7 +95,7 @@
 			<li class="list-group-item">duration : 최초 이벤트 후 지난 시간(ms)</li>
 			<li class="list-group-item">moveDeltaX : x 이동 변화량 (move 발생 시 이전 move의 위치 기준)</li>
 			<li class="list-group-item">moveDeltaY : y 이동 변화량 (move 발생 시 이전 move의 위치 기준)</li>
-			<li class="list-group-item">moveDistanceDelta : 이동 거리 변화량 (스칼라) (move 발생 시 이전 move의 위치 기준)</li>
+			<li class="list-group-item">moveDistanceBetweenDelta : 이동 거리 변화량 (스칼라) (move 발생 시 이전 move의 위치 기준)</li>
 			<li class="list-group-item">distanceBetween : 다중 포인터 1,2번째의 거리</li>
 			<li class="list-group-item">distanceBetweenDelta : 다중 포인터 1,2번째의 거리 변화량(pinch/zoom 용)</li>
 			<li class="list-group-item">angleBetween : 다중 포인터 1,2번째의 각도(rad)</li>
@@ -162,10 +162,10 @@
 					this.style.top = 	(this._top+event.detail.moveY)+'px'
 				}else if(event.detail.pointerNumber > 1){
 					let target = this.querySelector('.event-target');
-					let distanceDelta = event.detail.distanceDelta;
-					let rotateDelta = event.detail.rotateDelta;
-					this._scale = Math.min(2,Math.max(0.2,this._scale + distanceDelta/100));
-					this._rotate = this._rotate + rotateDelta
+					let distanceBetweenDelta = event.detail.distanceBetweenDelta;
+					let angleBetweenDelta = event.detail.angleBetweenDelta;
+					this._scale = Math.min(2,Math.max(0.2,this._scale + distanceBetweenDelta/100));
+					this._rotate = this._rotate + angleBetweenDelta
 					target.style.transform='scale('+this._scale+') rotate('+this._rotate+'rad)';
 				}
 
