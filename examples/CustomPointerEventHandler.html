@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko" >
 <head>
-	<title>js customPointerEvent
+	<title>js CustomPointerEventHandler
     </title>
 	<meta charset="utf-8">
 	<meta http-equiv="Content-Script-Type" content="text/javascript">
@@ -37,9 +37,10 @@
 	<meta property="og:type" content="website">
 	
 	<!-- //meta og -->
-	<script src="../CustomPointerEventHandler_DEV.js"></script>
+	<script src="../CustomPointer.js"></script>
+	<script src="../CustomPointerEventHandler.js"></script>
 	<script>
-		CustomPointerEventHandler.getInstance().debug = true;
+		// CustomPointerEventHandler.getInstance().debug = true;
 		CustomPointerEventHandler.active();
 	</script>
 	<style>
@@ -65,7 +66,7 @@
 </head>
 <body>
 	<div class="container">
-        <h1>js CustomPointerEvent</h1>
+        <h1>js CustomPointerEventHandler</h1>
         <hr>
 		<h2>설명</h2>
 		<ul class="list-group">
@@ -82,7 +83,7 @@
 				<div class="event-target" id="event-target" style="left:0;top:0; pointer-events: none;">target</div>
 			</div>
 		</div>
-		<div id="text-detail" style="white-space: break-spaces; font-size: 10px;">
+		<div id="text-detail" style="white-space: break-spaces; font-size: 8px;">
 
 		</div>
         
@@ -111,7 +112,8 @@
 			})
 			area.addEventListener('custompointermove',function(event){
 				if(this != event.target){return false;}
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail);
+				
 
 				if(event.detail.pointerNumber==1 && event.detail.maxPointerNumber == 1){
 					this.style.left = 	(this._left+event.detail.moveX)+'px'
