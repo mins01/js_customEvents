@@ -100,7 +100,7 @@ class CustomPointerEventHandler{
                 return i;
             }
         }
-        return -l
+        return -1
     }
 
     // customevent option 부 생성
@@ -199,9 +199,9 @@ class CustomPointerEventHandler{
 
         this.target.dispatchEvent((new CustomEvent('custompointerdown', this.options(event))));
 
-        document.addEventListener('pointermove',this.cbPointermove);
-        document.addEventListener('pointerup',this.cbPointerup);
-        document.addEventListener('pointercancel',this.cbPointercancel);
+        window.addEventListener('pointermove',this.cbPointermove);
+        window.addEventListener('pointerup',this.cbPointerup);
+        window.addEventListener('pointercancel',this.cbPointercancel);
     }
 
     cbPointermove = (event) =>{
@@ -246,9 +246,9 @@ class CustomPointerEventHandler{
 
         if(this.pointers.length===0){
             this.maxPointerNumber = 0;
-            document.removeEventListener('pointermove',this.cbPointermove);
-            document.removeEventListener('pointerup',this.cbPointerup);
-            document.removeEventListener('pointercancel',this.cbPointercancel);
+            window.removeEventListener('pointermove',this.cbPointermove);
+            window.removeEventListener('pointerup',this.cbPointerup);
+            window.removeEventListener('pointercancel',this.cbPointercancel);
         }
 
         this.target.dispatchEvent((new CustomEvent('custompointerup', this.options(event))));
@@ -267,9 +267,9 @@ class CustomPointerEventHandler{
 
         if(this.pointers.length===0){
             this.maxPointerNumber = 0;
-            document.removeEventListener('pointermove',this.cbPointermove);
-            document.removeEventListener('pointerup',this.cbPointerup);
-            document.removeEventListener('pointercancel',this.cbPointercancel);
+            window.removeEventListener('pointermove',this.cbPointermove);
+            window.removeEventListener('pointerup',this.cbPointerup);
+            window.removeEventListener('pointercancel',this.cbPointercancel);
         }
         this.target.dispatchEvent((new CustomEvent('custompointercancel', this.options(event))));
     }
