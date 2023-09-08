@@ -70,8 +70,64 @@
         <hr>
 		<h2>설명</h2>
 		<ul class="list-group">
-			<li class="list-group-item">pointerdown,pointermove,pointerup 이벤트에서 x,y 의 변화량을 moveX,moveY(detail 속에)로 제공한다</li>
+			<li class="list-group-item">CustomPointer 와 pointer event를 활용하여 포인터 제어 CustomPointerEvent 를 발생한다</li>
 		</ul>
+		<hr>
+		<h2>SPECIFICATION</h2>
+		<h3>constructor</h3>
+		<ul class="list-group">
+			<li class="list-group-item">customPointerEventHandler = new CustomPointerEventHandler()</li>
+			<li class="list-group-item">customPointerEventHandler = static CustomPointerEventHandler.getInstance() // 싱글톤. window 객체 기반을 동작</li>
+		</ul>
+		<h3>property</h3>
+		<ul class="list-group"> 
+			<li class="list-group-item">customPointerEventHandler = static CustomPointerEventHandler.instance // 디버깅용</li>
+			<li class="list-group-item">bool = CustomPointerEventHandler::debug // 디버깅용</li>
+			<li class="list-group-item">bool = CustomPointerEventHandler::actived // 동작상태</li>
+			<li class="list-group-item">Window|Document|HTMLElement = CustomPointerEventHandler::listener // 이벤트 적용 위치</li>
+			<li class="list-group-item">HTMLElement = CustomPointerEventHandler::target // 이벤트 발생 HTMLElement</li>
+
+			<li class="list-group-item">Array = CustomPointerEventHandler::pointers // coustomPointer 들. 멀티 터치 등에 맞춰서 늘어난다.</li>
+			<li class="list-group-item">int = CustomPointerEventHandler::maxPointerNumber // down 이벤트 후 발생된 포인터 최대 수</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceX // Primary 포인터의 X축 이동 거리</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceY // Primary 포인터의 Y축 이동 거리</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distance // Primary 포인터의 이동 거리</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceDeltaX // Primary 포인터의 X축 이동 거리 변화량</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceDeltaY // Primary 포인터의 Y축 이동 거리 변화량</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceDelta // Primary 포인터의 이동 거리 변화량</li>
+
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceBetween // 멀티포인터 1,2번째 사이의 거리</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::distanceBetweenDelta // 멀티포인터 1,2번째 사이의 거리 변화량</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::angleBetween // 멀티포인터 1,2번째 사이의 각도</li>
+			<li class="list-group-item">number = CustomPointerEventHandler::angleBetweenDelta // 멀티포인터 1,2번째 사이의 각도 변화량</li>
+			
+			<li class="list-group-item">number (ms) = getter CustomPointerEventHandler::duration // Primary 포인터의 걸린 시간</li>
+			<li class="list-group-item">number (px/ms)= getter CustomPointerEventHandler::velocityX // Primary 포인터의 X축 가속도</li>
+			<li class="list-group-item">number (px/ms)= getter CustomPointerEventHandler::velocityY // Primary 포인터의 Y축 가속도</li>
+			<li class="list-group-item">number (px/ms)= getter CustomPointerEventHandler::velocity // Primary 포인터의 가속도</li>
+			
+			<li class="list-group-item">true = CustomPointerEventHandler::bubbles // CustomPointerEvent 발생 시 설정</li>
+			<li class="list-group-item">true = CustomPointerEventHandler::cancelable // CustomPointerEvent 발생 시 설정</li>
+			<li class="list-group-item">true = CustomPointerEventHandler::composed // CustomPointerEvent 발생 시 설정</li>
+			
+
+
+
+		</ul>
+		<h3>method</h3>
+		<ul class="list-group">
+			<li class="list-group-item">null = CustomPointerEventHandler::cbPointerdown(event) // pointerdown 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = CustomPointerEventHandler::cbPointermove(event) // pointermove 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = CustomPointerEventHandler::cbPointerup(event) // pointerup 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = CustomPointerEventHandler::cbPointercancel(event) // pointercancel 이벤트 리스너 등록용 콜백 화살표 함수</li>
+
+			<li class="list-group-item">null = CustomPointerEventHandler::pointerdown(event) // pointerdown 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = CustomPointerEventHandler::pointermove(event) // pointermove 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = CustomPointerEventHandler::pointerup(event) // pointerup 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = CustomPointerEventHandler::pointercancel(event) // pointercancel 이벤트 처리 메소드</li>
+
+		</ul>
+		
 		<hr>
 		<div class="text-center">
 			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.active()" >active</button>
@@ -97,14 +153,14 @@
 				console.log('event',event);
 				event.detail.event.preventDefault();
 				event.detail.event.stopPropagation();
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.distanceX,event.detail.distanceY,event.detail.target.id,event.detail.event);
 
 				if(event.detail.event.isPrimary){
 					this._left = parseInt(this.style.left,10);
 					this._top = parseInt(this.style.top,10);
 
-					this.style.left = 	(this._left+event.detail.moveX)+'px'
-					this.style.top = 	(this._top+event.detail.moveY)+'px'
+					this.style.left = 	(this._left+event.detail.distanceX)+'px'
+					this.style.top = 	(this._top+event.detail.distanceY)+'px'
 				}
 				
 				
@@ -116,8 +172,8 @@
 				
 
 				if(event.detail.pointerNumber==1 && event.detail.maxPointerNumber == 1){
-					this.style.left = 	(this._left+event.detail.moveX)+'px'
-					this.style.top = 	(this._top+event.detail.moveY)+'px'
+					this.style.left = 	(this._left+event.detail.distanceX)+'px'
+					this.style.top = 	(this._top+event.detail.distanceY)+'px'
 				}else if(event.detail.pointerNumber > 1){
 					let target = this.querySelector('.event-target');
 					let distanceBetweenDelta = event.detail.distanceBetweenDelta;
@@ -131,7 +187,7 @@
 			})
 			area.addEventListener('custompointerup',function(event){
 				if(this != event.target){return false;}
-				console.log(event.type,event.detail.moveX,event.detail.moveY,event.detail.target.id,event.detail.event);
+				console.log(event.type,event.detail.distanceX,event.detail.distanceY,event.detail.target.id,event.detail.event);
 
 				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.detail.target.id+"\n"+JSON.stringify(event.detail,null,2);
 			})

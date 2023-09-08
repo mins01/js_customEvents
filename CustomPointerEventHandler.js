@@ -19,9 +19,9 @@ class CustomPointerEventHandler{
     // 싱글 포인터
     distanceX = null;
     distanceY = null;
+    distance = null;
     distanceDeltaX = null;
     distanceDeltaY = null;
-    distance = null;
     distanceDelta = null;
     // 멀티 포인터
     distanceBetween = null;
@@ -85,7 +85,7 @@ class CustomPointerEventHandler{
     }
 
     // 이벤트 포인터s에 넣은 객체 생성
-    eventToPointer(event){
+    generatePointer(event){
         return new CustomPointer(event);     
     }
     // 포인터 찾기
@@ -113,7 +113,7 @@ class CustomPointerEventHandler{
             target:this.target,
             event:event, // original event
             message:(message??''),
-            pointerNumber:this.pointers.length,
+            pointerNumber:this.pointerNumber,
             maxPointerNumber:this.maxPointerNumber,
 
             duration:this.duration,
@@ -161,7 +161,9 @@ class CustomPointerEventHandler{
         return this.pointers[0].velocity;
     }
 
-    
+    get pointerNumber(){
+        return this.pointers.length
+    }
 
 
 
@@ -173,7 +175,7 @@ class CustomPointerEventHandler{
         this.printDebug('pointerdown');
 
         // 포인터 등록
-        this.pointers.push(this.eventToPointer(event));
+        this.pointers.push(this.generatePointer(event));
         this.maxPointerNumber = Math.max(this.maxPointerNumber,this.pointers.length);
 
         if(event.isPrimary){ // 기본포인터인 경우만 
