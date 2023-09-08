@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko" >
+<head>
+	<title>js CustomGestureEventHandler
+    </title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<script src="/js/ForGoogle.js"></script>
+	<!-- google analytics -->
+	<script>if(window.ForGoogle){ ForGoogle.analytics() }else{ console.log("failure : ForGoogle.analytics()");}</script>
+	
+
+	<!-- jquery 관련 -->
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script> -->
+
+	<!-- 부트스트랩 4 : IE8지원안됨! -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
+	<!-- vue.js -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	
+	<!-- meta og -->
+	
+	<meta property="og:title" content="js CustomGestureEventHandler">
+	<meta property="og:description" content="js CustomGestureEventHandler">
+	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
+	<meta property="og:image:width" content="190">
+	<meta property="og:image:height" content="70" />
+	<meta property="og:site_name" content="js CustomGestureEventHandler" />
+	<meta property="og:type" content="website">
+	
+	<!-- //meta og -->
+	<script src="../CustomPointer.js"></script>
+	<script src="../CustomPointerEventHandler.js"></script>
+	<script src="../CustomGestureEventHandler.js"></script>
+	<script>
+		// CustomPointerEventHandler.getInstance().debug = true;
+		CustomPointerEventHandler.active();
+		// CustomGestureEventHandler.getInstance().debug = true;
+		CustomGestureEventHandler.active();
+	</script>
+	<style>
+		.event-area-wrap{position: relative;margin:20px auto; width: 300px;height: 300px;}
+		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;position: absolute; cursor: move;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
+		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
+		.event-target.on{
+			outline-style: dotted;
+			background-color: #bca;
+		}
+	</style>
+	
+</head>
+<body>
+	<div class="container">
+        <h1>js CustomGestureEventHandler</h1>
+        <hr>
+		<h2>설명</h2>
+		<ul class="list-group">
+			<li class="list-group-item">CustomPointerEvent 기반으로 CustomGestureEvent를 발생시킨다.</li>
+		</ul>
+
+		<hr>
+		<div class="text-center mb-1">
+			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.active()" >CustomPointerEventHandler.active</button>
+			<button type="button" class="btn btn-danger" onclick="CustomPointerEventHandler.deactive()" >CustomPointerEventHandler.deactive</button>
+		</div>
+		<div class="text-center">
+			<button type="button" class="btn btn-success" onclick="CustomGestureEventHandler.active()" >CustomGestureEventHandler.active</button>
+			<button type="button" class="btn btn-danger" onclick="CustomGestureEventHandler.deactive()" >CustomGestureEventHandler.deactive</button>
+		</div>
+		<hr>
+		<div class="event-area-wrap" id="event-area-wrap">
+			<div class="event-area" id="event-area" style="left:0;top:0; touch-action: none;user-select: none;">
+				<div class="event-target" id="event-target" style="left:0;top:0; pointer-events: none;">target</div>
+			</div>
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">swipeleft</span>
+			</div>
+			<input type="text" class="form-control" readonly id="swipeleft-distanceX">
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">swiperight</span>
+			</div>
+			<input type="text" class="form-control" readonly id="swiperight-distanceX">
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">swipeup</span>
+			</div>
+			<input type="text" class="form-control" readonly id="swipeup-distanceY">
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">swipedown</span>
+			</div>
+			<input type="text" class="form-control" readonly id="swipedown-distanceY">
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">pinch</span>
+			</div>
+			<input type="text" class="form-control" readonly id="pinch-distanceBetweenDelta">
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">zoom</span>
+			</div>
+			<input type="text" class="form-control" readonly id="zoom-distanceBetweenDelta">
+		</div>
+		<div class="input-group input-group-sm">
+			<div class="input-group-prepend">
+			  <span class="input-group-text">rotate</span>
+			</div>
+			<input type="text" class="form-control" readonly id="rotate-angleBetweenDelta">
+		</div>
+
+		
+
+		<div id="text-detail" style="white-space: break-spaces; font-size: 8px;">
+
+		</div>
+        
+		
+		<script>
+			let area = document.querySelector('#event-area');
+			let target = document.querySelector('#event-target');
+			target._x = 0;
+			target._y = 0;
+			target._scale = 1;
+			target._rotate = 0;
+			function target_transform(){
+				target.style.transform = `translate(${target._x}px,${target._y}px) scale(${target._scale}) rotate(${target._rotate}rad)`;
+
+			}
+			// area.addEventListener('custompointerdown',function(event){
+			// 	console.log(event.type);
+			// })
+
+			area.addEventListener('custompointermove',function(event){
+				console.log(event.type);
+				if(event.detail.pointerNumber == 1 && event.detail.maxPointerNumber == 1){
+					target._x = event.detail.distanceX;
+					target._y = event.detail.distanceY;
+				}
+				target_transform();
+			})
+			area.addEventListener('custompointerup',function(event){
+				console.log(event.type);
+				target._x = 0;
+				target._y = 0;
+				target_transform();
+			})
+			area.addEventListener('longpress',function(event){
+				console.log(event.type,event.detail);
+				target.textContent = event.type;
+				target.classList.toggle('on')
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+			})
+			// longpresscancel 사용안함
+			// area.addEventListener('longpresscancel',function(event){
+			// 	console.log(event.type,event.detail,event.detail.message);
+			// 	document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+			// })
+
+			area.addEventListener('swipeleft',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#swipeleft-distanceX').value = event.detail.lastDetail.distanceX;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+
+			})
+			area.addEventListener('swiperight',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#swiperight-distanceX').value = event.detail.lastDetail.distanceX;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+			})
+			area.addEventListener('swipeup',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#swipeup-distanceY').value = event.detail.lastDetail.distanceY;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+			})
+			area.addEventListener('swipedown',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#swipedown-distanceY').value = event.detail.lastDetail.distanceY;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+			})
+
+			area.addEventListener('pinch',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#pinch-distanceBetweenDelta').value = event.detail.lastDetail.distanceBetweenDelta;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+
+				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.lastDetail.distanceBetweenDelta/100));
+				target_transform();
+			})
+			area.addEventListener('zoom',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#zoom-distanceBetweenDelta').value = event.detail.lastDetail.distanceBetweenDelta;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+
+				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.lastDetail.distanceBetweenDelta/100));
+				target_transform();
+			})
+			area.addEventListener('rotate',function(event){
+				console.log(event.type,event.detail);
+				document.querySelector('#rotate-angleBetweenDelta').value = event.detail.lastDetail.angleBetweenDelta;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				target._rotate += event.detail.lastDetail.angleBetweenDelta;
+				target_transform();
+			})
+			
+		</script>
+		<div style="height:100vh"></div>
+	</div>
+</body>
+</html>
