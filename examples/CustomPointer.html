@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko" >
+<head>
+	<title>js CustomPointer
+    </title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<script src="/js/ForGoogle.js"></script>
+	<!-- google analytics -->
+	<script>if(window.ForGoogle){ ForGoogle.analytics() }else{ console.log("failure : ForGoogle.analytics()");}</script>
+	
+
+	<!-- jquery 관련 -->
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script> -->
+
+	<!-- 부트스트랩 4 : IE8지원안됨! -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
+	<!-- vue.js -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	
+	<!-- meta og -->
+	
+	<meta property="og:title" content="js CustomPointer">
+	<meta property="og:description" content="js CustomPointer">
+	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
+	<meta property="og:image:width" content="190">
+	<meta property="og:image:height" content="70" />
+	<meta property="og:site_name" content="js CustomPointer" />
+	<meta property="og:type" content="website">
+	
+	<!-- //meta og -->
+	<script src="../CustomPointer.js"></script>
+	
+	<style>
+		.event-area-wrap{position: relative;margin:20px auto; width: 300px;height: 300px;}
+		.event-area{background-color: #abc;outline: 2px solid #000; width: 300px;height: 300px;position: absolute; cursor: move;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
+		.event-target{background-color: #cba;outline: 2px solid #000; width: 100px;height: 100px;cursor: move;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+	
+</head>
+<body>
+	<div class="container">
+        <h1>js CustomPointer</h1>
+        <hr>
+		<h2>설명</h2>
+		<ul class="list-group">
+			<li class="list-group-item">pointer event 기반으로 pointer 정보 가공/제공</li>
+		</ul>
+		<hr>
+		<div class="text-center">
+			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.active()" >active</button>
+			<button type="button" class="btn btn-danger" onclick="CustomPointerEventHandler.deactive()" >deactive</button>
+		</div>
+		<hr>
+		<div class="event-area-wrap" id="event-area-wrap">
+			<div class="event-area" id="event-area" style="left:0;top:0; touch-action: none;user-select: none;">
+				<div class="event-target" id="event-target" style="left:0;top:0; pointer-events: none;">target</div>
+			</div>
+		</div>
+		<div id="text-detail" style="white-space: break-spaces; font-size: 8px;">
+
+		</div>
+        
+		
+		<script>
+			let area = document.querySelector('#event-area');
+			area._scale = 1;
+			area._rotate = 0;
+			area._cp = null;
+			area.addEventListener('pointerdown',function(event){
+				this.cp = new CustomPointer(event);
+				const v = {
+					pointerId:this.cp.pointerId,
+					isPrimary:this.cp.isPrimary,
+					duration:this.cp.duration,
+					distanceX:this.cp.distanceX,
+					distanceY:this.cp.distanceY,
+					distance:this.cp.distance,
+					velocityX:this.cp.velocityX,
+					velocityY:this.cp.velocityY,
+					velocity:this.cp.velocity,
+				}
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.target.id+"\n"+JSON.stringify(v,null,2);
+			})
+			area.addEventListener('pointermove',function(event){
+				if(!this.cp){return}
+				if(this.cp.pointerId != event.pointerId){return}
+				this.cp.setEvent(event);
+				const v = {
+					pointerId:this.cp.pointerId,
+					isPrimary:this.cp.isPrimary,
+					duration:this.cp.duration,
+					distanceX:this.cp.distanceX,
+					distanceY:this.cp.distanceY,
+					distance:this.cp.distance,
+					velocityX:this.cp.velocityX,
+					velocityY:this.cp.velocityY,
+					velocity:this.cp.velocity,
+				}
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.target.id+"\n"+JSON.stringify(v,null,2);
+				this.style.transform = `translate(${this.cp.distanceX}px,${this.cp.distanceY}px)`;
+			})
+			area.addEventListener('pointerup',function(event){
+				if(!this.cp){return}
+				if(this.cp.pointerId != event.pointerId){return}
+				this.cp = null;
+				
+				document.querySelector('#text-detail').textContent = "# event.type : "+event.type+"\n"+"# event.detail.target.id : "+event.target.id+"\n"+JSON.stringify(null,null,2);
+				this.style.transform = `translate(0px,0px)`;
+			})
+
+		</script>
+		<div style="height:100vh"></div>
+	</div>
+</body>
+</html>

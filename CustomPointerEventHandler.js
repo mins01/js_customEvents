@@ -17,8 +17,12 @@ class CustomPointerEventHandler{
     pointers = []; // 멀티 이벤트 처리용.
     maxPointerNumber = 0;
     // 싱글 포인터
-    moveDistance = null;
-    moveDistanceDelta = null;
+    distanceX = null;
+    distanceY = null;
+    distanceDeltaX = null;
+    distanceDeltaY = null;
+    distance = null;
+    distanceDelta = null;
     // 멀티 포인터
     distanceBetween = null;
     distanceBetweenDelta = null;
@@ -114,12 +118,12 @@ class CustomPointerEventHandler{
 
             duration:this.duration,
 
-            moveX:this.moveX,
-            moveY:this.moveY,
-            moveDistance:this.moveDistance,
-            moveDeltaX:this.moveDeltaX,
-            moveDeltaY:this.moveDeltaY,
-            moveDistanceDelta:this.moveDistanceDelta,
+            distanceX:this.distanceX,
+            distanceY:this.distanceY,
+            distance:this.distance,
+            distanceDeltaX:this.distanceDeltaX,
+            distanceDeltaY:this.distanceDeltaY,
+            distanceDelta:this.distanceDelta,
 
             distanceBetween:this.distanceBetween,
             distanceBetweenDelta:this.distanceBetweenDelta,
@@ -143,28 +147,6 @@ class CustomPointerEventHandler{
         if(this.pointers.length < 1){ return null; }
         return this.pointers[0].duration;
     }  
-    // 싱글포인터 값 가져오기
-    get moveX(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].moveX;
-    }
-    get moveY(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].moveY;
-    }
-    get moveDistance(){
-        if(!this.moveX || !this.moveY ){ return null; }
-        // return Math.sqrt(Math.pow(this.moveX,2) + Math.pow(this.moveY,2));
-        return this.pointers[0].moveDistance;
-    }
-    get moveDeltaX(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].moveDeltaX;
-    }
-    get moveDeltaY(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].moveDeltaY;
-    }
 
     get velocityX(){
         if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
@@ -197,9 +179,17 @@ class CustomPointerEventHandler{
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.target = event.target;
             
-            const moveDistance1 = this.pointers[0].moveDistance;
-            this.moveDistance = moveDistance1;
-            this.moveDistanceDelta = 0
+            const distance1 = this.pointers[0].distance;
+            this.distance = distance1;
+            this.distanceDelta = 0
+
+            const distanceX1 =this.pointers[0].distanceX;
+            this.distanceX = distanceX1;
+            this.distanceDeltaX = 0;
+
+            const distanceY1 =this.pointers[0].distanceY;
+            this.distanceY = distanceY1;
+            this.distanceDeltaY = 0;
         }
 
         if(this.pointers.length > 1){
@@ -238,9 +228,17 @@ class CustomPointerEventHandler{
         }
 
         if(event.isPrimary){ // 기본포인터인 경우만 
-            const moveDistance1 = this.pointers[0].moveDistance;
-            this.moveDistanceDelta = moveDistance1 - this.moveDistance;
-            this.moveDistance = moveDistance1;
+            const distance1 = this.pointers[0].distance;
+            this.distanceDelta = distance1 - this.distance;
+            this.distance = distance1;
+
+            const distanceX1 =this.pointers[0].distanceX;
+            this.distanceDeltaX = distanceX1 - this.distanceX;
+            this.distanceX = distanceX1;
+
+            const distanceY1 =this.pointers[0].distanceY;
+            this.distanceDeltaY = distanceY1 - this.distanceY;
+            this.distanceY = distanceY1;
         }
 
         if(this.pointers.length > 1){
@@ -254,12 +252,6 @@ class CustomPointerEventHandler{
         }
 
         this.target.dispatchEvent((new CustomEvent('custompointermove', this.options(event))));
-
-        // 마지막 포인터 갱신
-        if(pointer){
-            pointer.setLast(event)
-            // pointer.last.moveDistance = pointer.moveDistance;
-        }
     }
 
     cbPointerup = (event) =>{
@@ -274,8 +266,12 @@ class CustomPointerEventHandler{
         if(pointerIdx >= 0) this.pointers.splice(pointerIdx, 1);
 
         if(event.isPrimary){ // 기본포인터인 경우만 
-            this.moveDistanceDelta = null;
-            this.moveDistance = null;
+            this.distanceDelta = null;
+            this.distance = null;
+            this.distanceX = null;
+            this.distanceY = null;
+            this.distanceDeltaX = null;
+            this.distanceDeltaY = null;
         }
 
         if(this.pointers.length < 2 ){
@@ -307,8 +303,12 @@ class CustomPointerEventHandler{
         if(pointerIdx >= 0) this.pointers.splice(pointerIdx, 1);
 
         if(event.isPrimary){ // 기본포인터인 경우만 
-            this.moveDistanceDelta = null;
-            this.moveDistance = null;
+            this.distanceDelta = null;
+            this.distance = null;
+            this.distanceX = null;
+            this.distanceY = null;
+            this.distanceDeltaX = null;
+            this.distanceDeltaY = null;
         }
 
         if(this.pointers.length < 2 ){
