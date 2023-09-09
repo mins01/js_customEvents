@@ -178,57 +178,57 @@
 				console.log(event.type,event.detail);
 				target.textContent = event.type;
 				target.classList.toggle('on')
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 			// longpresscancel 사용안함
 			// area.addEventListener('longpresscancel',function(event){
 			// 	console.log(event.type,event.detail,event.detail.message);
-			// 	document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+			// 	document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			// })
 
 			area.addEventListener('swipeleft',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swipeleft-distanceX').value = event.detail.lastDetail.distanceX;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#swipeleft-distanceX').value = event.detail.distanceX;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
 			})
 			area.addEventListener('swiperight',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swiperight-distanceX').value = event.detail.lastDetail.distanceX;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#swiperight-distanceX').value = event.detail.distanceX;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 			area.addEventListener('swipeup',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swipeup-distanceY').value = event.detail.lastDetail.distanceY;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#swipeup-distanceY').value = event.detail.distanceY;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 			area.addEventListener('swipedown',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swipedown-distanceY').value = event.detail.lastDetail.distanceY;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#swipedown-distanceY').value = event.detail.distanceY;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 
 			area.addEventListener('pinch',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#pinch-distanceBetweenDelta').value = event.detail.lastDetail.distanceBetweenDelta;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#pinch-distanceBetweenDelta').value = event.detail.distanceBetweenDelta;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
-				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.lastDetail.distanceBetweenDelta/100));
+				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.distanceBetweenDelta/100));
 				target_transform();
 			})
 			area.addEventListener('zoom',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#zoom-distanceBetweenDelta').value = event.detail.lastDetail.distanceBetweenDelta;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
+				document.querySelector('#zoom-distanceBetweenDelta').value = event.detail.distanceBetweenDelta;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
-				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.lastDetail.distanceBetweenDelta/100));
+				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.distanceBetweenDelta/100));
 				target_transform();
 			})
 			area.addEventListener('rotate',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#rotate-angleBetweenDelta').value = event.detail.lastDetail.angleBetweenDelta;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail.lastDetail,null,2);
-				target._rotate += event.detail.lastDetail.angleBetweenDelta;
+				document.querySelector('#rotate-angleBetweenDelta').value = event.detail.angleBetweenDelta;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
+				target._rotate += event.detail.angleBetweenDelta;
 				target_transform();
 			})
 			

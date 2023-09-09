@@ -89,12 +89,16 @@ class CustomGestureEventHandler{
     }
     // customevent option.detail 부 생성
     detail(event,message){
-        return {
-            target:this.target,
-            event:event, // original event
-            message:(message??''),
-            lastDetail:this.lastDetail,
-        }
+        // return {
+        //     target:this.target,
+        //     event:event, // original event
+        //     message:(message??''),
+        //     lastDetail:event.detail,
+        // }
+        const detail = Object.assign(event.detail);
+        if(message) detail.message = message;
+        return detail;
+
     }
 
 
@@ -130,9 +134,7 @@ class CustomGestureEventHandler{
 
     custompointerdown(event){
         this.printDebug('customointerdown');
-        
-        this.lastDetail = event.detail;
-        
+               
         if(event.detail.isPrimary){ // 기본포인터인 경우만 
             this.target = event.target;
         }
@@ -154,8 +156,6 @@ class CustomGestureEventHandler{
 
     custompointermove(event){
         this.printDebug('custompointermove');
-        
-        this.lastDetail = event.detail;
 
         //----- longpress
         if(this.longPressTimeoutTm && event.detail.distance > this.longPressCancelThreshold ){
@@ -166,8 +166,8 @@ class CustomGestureEventHandler{
 
         if(event.detail.pointerNumber >= 2){
             //----- pinch/zoom
-            if(Math.abs(this.lastDetail.distanceBetweenDelta) >= this.pinchZoomDistanceBetweenDeltaThreshold ){
-                if(this.lastDetail.distanceBetweenDelta < 0){
+            if(Math.abs(event.detail.distanceBetweenDelta) >= this.pinchZoomDistanceBetweenDeltaThreshold ){
+                if(event.detail.distanceBetweenDelta < 0){
                     this.target.dispatchEvent((new CustomEvent('pinch', this.options(event))));
                 }else{
                     this.target.dispatchEvent((new CustomEvent('zoom', this.options(event))));
@@ -175,7 +175,7 @@ class CustomGestureEventHandler{
             }
     
             //----- rotate
-            if(Math.abs(this.lastDetail.angleBetweenDelta) >= this.rotateAngleBetweenDeltaThreshold ){
+            if(Math.abs(event.detail.angleBetweenDelta) >= this.rotateAngleBetweenDeltaThreshold ){
                 this.target.dispatchEvent((new CustomEvent('rotate', this.options(event))));
             }
         }
@@ -195,15 +195,15 @@ class CustomGestureEventHandler{
             // this.target.dispatchEvent((new CustomEvent('longpresscancel', this.options(event,'custompointerup before longPressTimeout'))));
         }
         //----- swipe
-        if(Math.abs(this.lastDetail.distanceX) >= this.swipeDistanceThreshold && this.lastDetail.velocityX >= this.swipeVelocityThreshold ){
-            if(this.lastDetail.distanceX < 0){
+        if(Math.abs(event.detail.distanceX) >= this.swipeDistanceThreshold && event.detail.velocityX >= this.swipeVelocityThreshold ){
+            if(event.detail.distanceX < 0){
                 this.target.dispatchEvent((new CustomEvent('swipeleft', this.options(event))));
             }else{
                 this.target.dispatchEvent((new CustomEvent('swiperight', this.options(event))));
             }
         }
-        if(Math.abs(this.lastDetail.distanceY) >= this.swipeDistanceThreshold && this.lastDetail.velocityY >= this.swipeVelocityThreshold){
-            if(this.lastDetail.distanceY < 0){
+        if(Math.abs(event.detail.distanceY) >= this.swipeDistanceThreshold && event.detail.velocityY >= this.swipeVelocityThreshold){
+            if(event.detail.distanceY < 0){
                 this.target.dispatchEvent((new CustomEvent('swipeup', this.options(event))));
             }else{
                 this.target.dispatchEvent((new CustomEvent('swipedown', this.options(event))));
