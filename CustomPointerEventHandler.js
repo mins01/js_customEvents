@@ -10,7 +10,12 @@ class CustomPointerEventHandler{
     actived = false; //동작
     listener = null; // 이벤트를 붙이는 대상. 기본은 window
     target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
-    
+    // 최초 정보
+    first = {
+        pageX:null,
+        pageY:null,
+        timeStamp:null,
+    }  
     // static firstTimeStamp = null; // 최초 이벤트의 timeStamp
     
     // 포인터 이벤트
@@ -94,7 +99,7 @@ class CustomPointerEventHandler{
     }
     // 포인터 찾기
     indexOfcustomPointers(event){
-        for(let i=0,m=this.customPointers.length;i<m;i++){
+        for(let i=0,m= this.customPointers.length;i<m;i++){
             if(event.pointerId == this.customPointers[i].pointerId){
                 return i;
             }
@@ -134,15 +139,17 @@ class CustomPointerEventHandler{
             angle:this.angle,
             angleDelta:this.angleDelta,
 
+            velocityX:this.velocityX,
+            velocityY:this.velocityY,
+            velocity:this.velocity,
+
             distanceBetween:this.distanceBetween,
             distanceBetweenDelta:this.distanceBetweenDelta,
 
             angleBetween:this.angleBetween,
             angleBetweenDelta:this.angleBetweenDelta,
             
-            velocityX:this.velocityX,
-            velocityY:this.velocityY,
-            velocity:this.velocity,
+            
             
             customPointers:Array.from(this.customPointers),
             
@@ -154,7 +161,8 @@ class CustomPointerEventHandler{
     // 이벤트 전체 기준 값 가져오기
     get duration(){
         if(this.customPointers.length < 1){ return null; }
-        return this.customPointers[0].duration;
+        // 가장 마지막 이벤트 timeStamp -  최초 이벤트 timeStamp
+        return this.customPointers[this.customPointers.length - 1].current.timeStamp - this.first.timeStamp;
     }  
 
     get velocityX(){
@@ -189,12 +197,15 @@ class CustomPointerEventHandler{
 
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.target = event.target;
+            this.first.pageX = this.customPointers[0].first.pageX;
+            this.first.pageY = this.customPointers[0].first.pageY;
+            this.first.timeStamp = this.customPointers[0].first.timeStamp;
            
-            const distanceX1 =this.customPointers[0].distanceX;
+            const distanceX1 = this.customPointers[0].distanceX;
             this.distanceX = distanceX1;
             this.distanceDeltaX = 0;
             
-            const distanceY1 =this.customPointers[0].distanceY;
+            const distanceY1 = this.customPointers[0].distanceY;
             this.distanceY = distanceY1;
             this.distanceDeltaY = 0;
 
@@ -243,11 +254,11 @@ class CustomPointerEventHandler{
         }
 
         if(event.isPrimary){ // 기본포인터인 경우만 
-            const distanceX1 =this.customPointers[0].distanceX;
+            const distanceX1 = this.customPointers[0].distanceX;
             this.distanceDeltaX = distanceX1 - this.distanceX;
             this.distanceX = distanceX1;
 
-            const distanceY1 =this.customPointers[0].distanceY;
+            const distanceY1 = this.customPointers[0].distanceY;
             this.distanceDeltaY = distanceY1 - this.distanceY;
             this.distanceY = distanceY1;
 
