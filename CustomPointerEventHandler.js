@@ -137,7 +137,7 @@ class CustomPointerEventHandler{
             velocityY:this.velocityY,
             velocity:this.velocity,
             
-            customPointers:this.customPointers,
+            customPointers:Array.from(this.customPointers),
             
         }
     }
@@ -265,6 +265,8 @@ class CustomPointerEventHandler{
     pointerup(event){
         this.printDebug('pointerup');
 
+        this.target.dispatchEvent((new CustomEvent('custompointerup', this.options(event))));
+
         // 포인터 삭제
         let pointerIdx = this.indexOfcustomPointers(event);
         if(pointerIdx >= 0) this.customPointers.splice(pointerIdx, 1);
@@ -292,7 +294,7 @@ class CustomPointerEventHandler{
             window.removeEventListener('pointercancel',this.cbPointercancel);
         }
 
-        this.target.dispatchEvent((new CustomEvent('custompointerup', this.options(event))));
+        
 
     }
 
@@ -302,6 +304,8 @@ class CustomPointerEventHandler{
     pointercancel(event){
         this.printDebug('pointercancel');
 
+        this.target.dispatchEvent((new CustomEvent('custompointercancel', this.options(event))));
+        
         // 포인터 삭제
         let pointerIdx = this.indexOfcustomPointers(event);
         if(pointerIdx >= 0) this.customPointers.splice(pointerIdx, 1);
@@ -328,7 +332,7 @@ class CustomPointerEventHandler{
             window.removeEventListener('pointerup',this.cbPointerup);
             window.removeEventListener('pointercancel',this.cbPointercancel);
         }
-        this.target.dispatchEvent((new CustomEvent('custompointercancel', this.options(event))));
+        
     }
     
 }
