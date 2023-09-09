@@ -33,6 +33,7 @@ class CustomPointer{
   get distanceX(){ return this.event.pageX - this.first.pageX; }
   get distanceY(){ return this.event.pageY - this.first.pageY; }
   get distance(){ return Math.sqrt(Math.pow(this.distanceX,2) + Math.pow(this.distanceY,2)); }
+  get angle(){ return Math.atan2(this.event.pageY - this.first.pageY,this.event.pageX - this.first.pageX); }
   get velocityX(){ return this.duration?Math.abs(this.distanceX) / this.duration:0; }
   get velocityY(){ return this.duration?Math.abs(this.distanceY) / this.duration:0; }
   get velocity(){ return this.duration?Math.abs(this.distance) / this.duration:0; }
