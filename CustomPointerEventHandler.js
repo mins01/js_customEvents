@@ -239,7 +239,7 @@ class CustomPointerEventHandler{
         let pointerIdx = this.indexOfcustomPointers(event);
         let pointer = (pointerIdx > -1)?this.customPointers[pointerIdx]:null;
         if(pointer){
-            pointer.setEvent(event)
+            pointer.setCurrent(event)
         }
 
         if(event.isPrimary){ // 기본포인터인 경우만 

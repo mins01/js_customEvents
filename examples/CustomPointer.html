@@ -131,7 +131,7 @@
 			window.addEventListener('pointermove',function(event){
 				if(!cp){return}
 				if(cp.pointerId != event.pointerId){return}
-				cp.setEvent(event);
+				cp.setCurrent(event);
 				const v = {
 					pointerId:cp.pointerId,
 					isPrimary:cp.isPrimary,

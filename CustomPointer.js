@@ -21,7 +21,8 @@ class CustomPointer{
     this.pointerId = event.pointerId,
     this.isPrimary = event.isPrimary,
     this.setFirst(event);
-    this.setEvent(event);
+    // this.setEvent(event);
+    this.setCurrent(event);
     
   }
 
@@ -30,6 +31,7 @@ class CustomPointer{
     this.first.pageY = event.pageY;
     this.first.timeStamp = event.timeStamp;
   }
+  // @deprecated
   setEvent(event){
     this.event = event;
     this.setCurrent(event)
