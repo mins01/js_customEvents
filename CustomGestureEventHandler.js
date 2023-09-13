@@ -20,7 +20,7 @@ class CustomGestureEventHandler{
 
     // longPress
     longPressTimeout = 500; //0.5 sec. for Long press
-    longPressCancelThreshold = 10; //100px
+    longPressCancelThreshold = 30; // 30px
     longPressTimeoutTm = null; //
 
     // swipe 

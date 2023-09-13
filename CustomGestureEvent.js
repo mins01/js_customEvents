@@ -1,6 +1,7 @@
 "use strict";
 /**
  * 제스쳐 이벤트 에뮬레이팅
+ * @deprecated
  */
 class CustomGestureEvent extends CustomPointerEvent{
     // longPress

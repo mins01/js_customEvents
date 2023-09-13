@@ -1,6 +1,7 @@
 "use strict";
 /**
  * pointer event 기반 데이터
+ * @deprecated
  */
 class CustomPointer{
   pointerId = null;

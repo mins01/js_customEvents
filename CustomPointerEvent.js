@@ -1,6 +1,7 @@
 "use strict";
 /**
  * PointerEvent 등 를 확장해서 custom event를 triger 해서 사용할 수 있게 한다.
+ * @deprecated
  */
 class CustomPointerEvent extends CustomEvent{
     

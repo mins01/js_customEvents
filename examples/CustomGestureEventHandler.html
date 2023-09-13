@@ -37,7 +37,8 @@
 	<meta property="og:type" content="website">
 	
 	<!-- //meta og -->
-	<script src="../CustomPointer.js"></script>
+	<!-- <script src="../CustomPointer.js"></script> -->
+	<script src="../../js_pointerMeasurer/PointerMeasurer.js"></script>	
 	<script src="../CustomPointerEventHandler.js"></script>
 	<script src="../CustomGestureEventHandler.js"></script>
 	<script>
@@ -157,11 +158,11 @@
 
 			}
 			// area.addEventListener('custompointerdown',function(event){
-			// 	console.log(event.type);
+			// 	console.log(event.type,event.detail);
 			// })
 
 			area.addEventListener('custompointermove',function(event){
-				console.log(event.type);
+				console.log(event.type,event.detail);
 				if(event.detail.pointerNumber == 1 && event.detail.maxPointerNumber == 1){
 					target._x = event.detail.distanceX;
 					target._y = event.detail.distanceY;
@@ -169,7 +170,7 @@
 				target_transform();
 			})
 			area.addEventListener('custompointerup',function(event){
-				console.log(event.type);
+				console.log(event.type,event.detail);
 				target._x = 0;
 				target._y = 0;
 				target_transform();
