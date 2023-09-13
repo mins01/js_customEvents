@@ -63,7 +63,29 @@
 			align-items: center;
 		}
 	</style>
-	
+	<style>
+		.event-vector-target{
+			border:1px dashed #000;
+			height: 0px;
+			box-sizing: content-box;
+			transform-origin: 0 center;
+			/* pointer-events: none; */
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: flex-end;
+			align-items: center;
+		}
+		.event-vector-target-circle{
+			width:20px;height:20px;
+			border:2px solid #000;
+			background-color: red;
+			border-radius: 10em;
+			margin-right:-10px;
+			flex: 0 0 20px;
+		}
+	</style>
 </head>
 <body>
 	<div class="container">
@@ -194,6 +216,43 @@
 			})
 
 		</script>
+		<hr>
+
+		<div class="event-area-wrap" id="event-area-wrap2">
+			<div class="event-area event-vector-area"style="left:0;top:0; touch-action: none;user-select: none; cursor: auto;">
+				<div class="event-vector-target-wrap" style="width:1px;height: 1px;">
+					<div class="event-vector-target" style="width:0px;height: 0px;"><div class="event-vector-target-circle" style="cursor: move"></div></div>
+				</div>
+			</div>
+		</div>
+		<div class="text-center">붉은 원을 이동해보세요.</div>
+		<script>
+			let vectorArea = document.querySelector('.event-vector-area');
+			let vectorTarget = document.querySelector('.event-vector-target');
+			let vectorTargetCircle = document.querySelector('.event-vector-target-circle');
+
+			vectorTargetCircle.addEventListener('custompointerdown',function(event){
+				if(this != event.target){return false;}
+				event.detail.event.preventDefault();
+				event.detail.event.stopPropagation();
+			})
+			vectorTargetCircle.addEventListener('custompointermove',function(event){
+				if(this != event.target){return false;}
+				event.detail.event.preventDefault();
+				event.detail.event.stopPropagation();
+				vectorTarget.style.width = event.detail.distance+'px'
+				vectorTarget.style.transform = `rotate(${event.detail.angle}rad)`
+			})
+			vectorTargetCircle.addEventListener('custompointerup',function(event){
+				if(this != event.target){return false;}
+				event.detail.event.preventDefault();
+				event.detail.event.stopPropagation();
+				vectorTarget.style.width = '0px'
+				vectorTarget.style.transform = `rotate(0rad)`
+			})
+
+		</script>
+
 		<div style="height:100vh"></div>
 	</div>
 </body>
