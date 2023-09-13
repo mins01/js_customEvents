@@ -85,6 +85,9 @@
 			margin-right:-10px;
 			flex: 0 0 20px;
 		}
+		.event-vector-target.transition-on{
+			transition: all 0.3s linear;
+		}
 	</style>
 </head>
 <body>
@@ -235,6 +238,7 @@
 				if(this != event.target){return false;}
 				event.detail.event.preventDefault();
 				event.detail.event.stopPropagation();
+				vectorTarget.classList.remove('transition-on')
 			})
 			vectorTargetCircle.addEventListener('custompointermove',function(event){
 				if(this != event.target){return false;}
@@ -248,7 +252,8 @@
 				event.detail.event.preventDefault();
 				event.detail.event.stopPropagation();
 				vectorTarget.style.width = '0px'
-				vectorTarget.style.transform = `rotate(0rad)`
+				// vectorTarget.style.transform = `rotate(0rad)`
+				vectorTarget.classList.add('transition-on')
 			})
 
 		</script>
