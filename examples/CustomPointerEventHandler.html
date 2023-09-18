@@ -43,6 +43,7 @@
 	<script>
 		// CustomPointerEventHandler.getInstance().debug = true;
 		CustomPointerEventHandler.active();
+		let customPointerEventHandler = new CustomPointerEventHandler();
 	</script>
 	<style>
 		.event-area-wrap{position: relative;margin:20px auto; width: 300px;height: 300px;}
@@ -78,12 +79,12 @@
 			align-items: center;
 		}
 		.event-vector-target-circle{
-			width:20px;height:20px;
+			width:50px;height:50px;
 			border:2px solid #000;
 			background-color: red;
 			border-radius: 10em;
-			margin-right:-10px;
-			flex: 0 0 20px;
+			margin-right:-25px;
+			flex: 0 0 50px;
 		}
 		.event-vector-target.transition-on{
 			transition: all 0.3s linear;

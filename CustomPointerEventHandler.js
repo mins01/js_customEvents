@@ -70,9 +70,41 @@ class CustomPointerEventHandler{
     }
 
     constructor(){
-
+        this.reset();
     }
 
+    reset(){
+        this.actived = false; //동작
+        this.listener = null; // 이벤트를 붙이는 대상. 기본은 window
+        this.target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
+        // 최초 정보
+        this.first = {
+            pageX:null,
+            pageY:null,
+            timeStamp:null,
+        }  
+        
+        // 포인터 이벤트
+        this.pointerMeasurers = []; // 포인터 측정기 들. 멀티
+        this.maxPointerNumber = 0;
+        // 싱글 포인터
+        this.distanceX = null;
+        this.distanceY = null;
+        this.distance = null;
+        this.distanceDeltaX = null;
+        this.distanceDeltaY = null;
+        this.distanceDelta = null;
+    
+        this.angle = null;
+        this.angleDelta = null;
+    
+        // 멀티 포인터
+        this.distanceBetween = null;
+        this.distanceBetweenDelta = null;
+    
+        this.angleBetween = null;
+        this.angleBetweenDelta = null;
+    }
     // 디버깅용
     printDebug(){
         if(!this.debug){return;}
@@ -197,9 +229,9 @@ class CustomPointerEventHandler{
 
         if(event.isPrimary){ // 기본포인터인 경우만 
             this.target = event.target;
-            this.first.pageX = this.pointerMeasurers[0].first.pageX;
-            this.first.pageY = this.pointerMeasurers[0].first.pageY;
-            this.first.timeStamp = this.pointerMeasurers[0].first.timeStamp;
+            this.first.pageX = event.pageX;
+            this.first.pageY = event.pageY;
+            this.first.timeStamp = event.timeStamp
            
             const distanceX1 = this.pointerMeasurers[0].distanceX;
             this.distanceX = distanceX1;
@@ -250,7 +282,7 @@ class CustomPointerEventHandler{
         let pointerIdx = this.indexOfpointerMeasurers(event);
         let pointer = (pointerIdx > -1)?this.pointerMeasurers[pointerIdx]:null;
         if(pointer){
-            pointer.setCurrent(event)
+            pointer.setEvent(event)
         }
 
         if(event.isPrimary){ // 기본포인터인 경우만 
@@ -291,10 +323,17 @@ class CustomPointerEventHandler{
     pointerup(event){
         this.printDebug('pointerup');
 
+        // 포인터 갱신
+        let pointerIdx = this.indexOfpointerMeasurers(event);
+        let pointer = (pointerIdx > -1)?this.pointerMeasurers[pointerIdx]:null;
+        if(pointer){
+            pointer.setEvent(event)
+        }
+
         this.target.dispatchEvent((new CustomEvent('custompointerup', this.options(event))));
 
         // 포인터 삭제
-        let pointerIdx = this.indexOfpointerMeasurers(event);
+        // let pointerIdx = this.indexOfpointerMeasurers(event);
         if(pointerIdx >= 0) this.pointerMeasurers.splice(pointerIdx, 1);
 
         if(event.isPrimary){ // 기본포인터인 경우만 
@@ -330,10 +369,17 @@ class CustomPointerEventHandler{
     pointercancel(event){
         this.printDebug('pointercancel');
 
+        // 포인터 갱신
+        let pointerIdx = this.indexOfpointerMeasurers(event);
+        let pointer = (pointerIdx > -1)?this.pointerMeasurers[pointerIdx]:null;
+        if(pointer){
+            pointer.setEvent(event)
+        }
+
         this.target.dispatchEvent((new CustomEvent('custompointercancel', this.options(event))));
 
         // 포인터 삭제
-        let pointerIdx = this.indexOfpointerMeasurers(event);
+        // let pointerIdx = this.indexOfpointerMeasurers(event);
         if(pointerIdx >= 0) this.pointerMeasurers.splice(pointerIdx, 1);
 
         if(event.isPrimary){ // 기본포인터인 경우만 
