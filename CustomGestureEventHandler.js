@@ -6,12 +6,14 @@ class CustomGestureEventHandler{
     // 싱글톤 객체
     static instance = null;
 
+    // 디버깅 여부
     debug = false;
-    actived = false; //동작
+
+    activated = false; //동작
     listener = null; // 이벤트를 붙이는 대상. 기본은 window
     target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
 
-    lastDetail = null;
+    // lastDetail = null;
 
     // 커스텀 이벤트 옵션 값 설정
     bubbles = true; // 이벤트 버블 가능?
@@ -41,16 +43,16 @@ class CustomGestureEventHandler{
     }
     //=== 전역 메소드 
     // 동작 on
-    static active(){
+    static activate(){
         let instance = this.getInstance();
-        instance.printDebug('active');
+        instance.printDebug('activate');
         if(!globalThis?.window){ throw('window is not exists'); }
         instance.addEventListener(globalThis.window);
     }
     // 동작 off
-    static deactive(){
+    static deactivate(){
         let instance = this.getInstance();
-        instance.printDebug('deactive');
+        instance.printDebug('deactivate');
         instance.removeEventListener();
     }
 
@@ -66,15 +68,16 @@ class CustomGestureEventHandler{
 
     // 동작 이벤트 등록
     addEventListener(listener){
-        if(this.actived){ console.warn('already actived'); }
+        if(this.activated){ console.warn('already activated'); }
         this.listener = listener
-        this.actived = true;
+        this.activated = true;
         this.listener.addEventListener('custompointerdown',this.cbCustompointerdown);
     }
 
     // 동작 이벤트 제거
     removeEventListener(){
-        this.actived = false;
+        if(!this.activated){ console.warn('not activated'); }
+        this.activated = false;
         this.listener.removeEventListener('custompointerdown',this.cbCustompointerdown);
     }
 
@@ -89,43 +92,11 @@ class CustomGestureEventHandler{
     }
     // customevent option.detail 부 생성
     detail(event,message){
-        // return {
-        //     target:this.target,
-        //     event:event, // original event
-        //     message:(message??''),
-        //     lastDetail:event.detail,
-        // }
         const detail = Object.assign(event.detail);
-        if(message) detail.message = message;
+        detail.message = message??'';
         return detail;
 
     }
-
-
-
-    // 이벤트 전체 기준 값 가져오기
-    get duration(){
-        if(this.pointers.length < 1){ return null; }
-        return this.pointers[0].duration;
-    }  
-
-    get velocityX(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].velocityX;
-    }
-    get velocityY(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].velocityY;
-    }
-    get velocity(){
-        if(this.pointers.length < 1 || !this.pointers[0].isPrimary){ return null; }
-        return this.pointers[0].velocity;
-    }
-
-    get pointerNumber(){
-        return this.pointers.length
-    }
-
 
 
     cbCustompointerdown = (event) =>{

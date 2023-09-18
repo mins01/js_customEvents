@@ -6,10 +6,13 @@ class CustomPointerEventHandler{
     // 싱글톤 객체
     static instance = null;
 
+    // 디버깅 여부
     debug = false;
+
     activated = false; //동작
     listener = null; // 이벤트를 붙이는 대상. 기본은 window
     target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
+
     // 최초 정보
     first = {
         pageX:null,
@@ -20,6 +23,7 @@ class CustomPointerEventHandler{
     // 포인터 이벤트
     pointerMeasurers = []; // 포인터 측정기 들. 멀티
     maxPointerNumber = 0;
+
     // 싱글 포인터
     distanceX = null;
     distanceY = null;
@@ -69,14 +73,14 @@ class CustomPointerEventHandler{
     }
 
     constructor(){
+        this.activated = false; //동작
+        this.listener = null; // 이벤트를 붙이는 대상. 기본은 window
+        this.target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
         this.reset();
     }
 
     // 내부 변수 초기화
     reset(){
-        this.activated = false; //동작
-        this.listener = null; // 이벤트를 붙이는 대상. 기본은 window
-        this.target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
         // 최초 정보
         this.first = {
             pageX:null,
@@ -156,6 +160,7 @@ class CustomPointerEventHandler{
             isPrimary:event.isPrimary,
             pointerId:event.pointerId,
             event:event, // original event
+            first:Object.assign(this.first), // original event
             message:(message??''),
             pointerNumber:this.pointerNumber,
             maxPointerNumber:this.maxPointerNumber,
@@ -217,6 +222,72 @@ class CustomPointerEventHandler{
 
 
 
+    setEvent(event){
+        if(!this.first.timeStamp){ // 최초 동작
+            if(event.isPrimary){ // 기본포인터인 경우만 
+                this.target = event.target;
+                this.first.pageX = event.pageX;
+                this.first.pageY = event.pageY;
+                this.first.timeStamp = event.timeStamp
+               
+                const distanceX1 = this.pointerMeasurers[0].distanceX;
+                this.distanceX = distanceX1;
+                this.distanceDeltaX = 0;
+                
+                const distanceY1 = this.pointerMeasurers[0].distanceY;
+                this.distanceY = distanceY1;
+                this.distanceDeltaY = 0;
+    
+                const distance1 = this.pointerMeasurers[0].distance;
+                this.distance = distance1;
+                this.distanceDelta = 0
+    
+                const angle1 = this.pointerMeasurers[0].angle;
+                this.angle = angle1;
+                this.angleDelta = 0
+            }
+    
+            if(this.pointerMeasurers.length > 1){
+                const distanceBetween1 = this.pointerMeasurers[0].distanceBetween(this.pointerMeasurers[1]);
+                this.distanceBetween = distanceBetween1;
+                this.distanceBetweenDelta = 0;
+    
+                const angleBetween1 = this.pointerMeasurers[0].angleBetween(this.pointerMeasurers[1]);
+                this.angleBetween = angleBetween1;
+                this.angleBetweenDelta = 0;
+            }
+        }else{
+            if(event.isPrimary){ // 기본포인터인 경우만 
+                const distanceX1 = this.pointerMeasurers[0].distanceX;
+                this.distanceDeltaX = distanceX1 - this.distanceX;
+                this.distanceX = distanceX1;
+    
+                const distanceY1 = this.pointerMeasurers[0].distanceY;
+                this.distanceDeltaY = distanceY1 - this.distanceY;
+                this.distanceY = distanceY1;
+    
+                const distance1 = this.pointerMeasurers[0].distance;
+                this.distanceDelta = distance1 - this.distance;
+                this.distance = distance1;
+    
+                const angle1 = this.pointerMeasurers[0].angle;
+                this.angleDelta = angle1 - this.angle;
+                this.angle = angle1;
+            }
+    
+            if(this.pointerMeasurers.length > 1){
+                const distanceBetween1 = this.pointerMeasurers[0].distanceBetween(this.pointerMeasurers[1]);
+                this.distanceBetweenDelta = this.distanceBetween?distanceBetween1 - this.distanceBetween:null;
+                this.distanceBetween = distanceBetween1;
+    
+                const angleBetween1 = this.pointerMeasurers[0].angleBetween(this.pointerMeasurers[1]);
+                this.angleBetweenDelta = this.angleBetween?angleBetween1 - this.angleBetween:null;
+                this.angleBetween = angleBetween1;
+            }
+        }
+    }
+
+
     cbPointerdown = (event) =>{
         return this.pointerdown(event)
     }
@@ -228,40 +299,7 @@ class CustomPointerEventHandler{
         this.pointerMeasurers.push(this.generatePointerMeasurer(event));
         this.maxPointerNumber = Math.max(this.maxPointerNumber,this.pointerMeasurers.length);
 
-        if(event.isPrimary){ // 기본포인터인 경우만 
-            this.target = event.target;
-            this.first.pageX = event.pageX;
-            this.first.pageY = event.pageY;
-            this.first.timeStamp = event.timeStamp
-           
-            const distanceX1 = this.pointerMeasurers[0].distanceX;
-            this.distanceX = distanceX1;
-            this.distanceDeltaX = 0;
-            
-            const distanceY1 = this.pointerMeasurers[0].distanceY;
-            this.distanceY = distanceY1;
-            this.distanceDeltaY = 0;
-
-            const distance1 = this.pointerMeasurers[0].distance;
-            this.distance = distance1;
-            this.distanceDelta = 0
-
-            const angle1 = this.pointerMeasurers[0].angle;
-            this.angle = angle1;
-            this.angleDelta = 0
-        }
-
-        if(this.pointerMeasurers.length > 1){
-            const distanceBetween1 = this.pointerMeasurers[0].distanceBetween(this.pointerMeasurers[1]);
-            this.distanceBetween = distanceBetween1;
-            this.distanceBetweenDelta = 0;
-
-            const angleBetween1 = this.pointerMeasurers[0].angleBetween(this.pointerMeasurers[1]);
-            this.angleBetween = angleBetween1;
-            this.angleBetweenDelta = 0;
-
-            
-        }
+        this.setEvent(event);
 
 
 
@@ -286,33 +324,7 @@ class CustomPointerEventHandler{
             pointer.setEvent(event)
         }
 
-        if(event.isPrimary){ // 기본포인터인 경우만 
-            const distanceX1 = this.pointerMeasurers[0].distanceX;
-            this.distanceDeltaX = distanceX1 - this.distanceX;
-            this.distanceX = distanceX1;
-
-            const distanceY1 = this.pointerMeasurers[0].distanceY;
-            this.distanceDeltaY = distanceY1 - this.distanceY;
-            this.distanceY = distanceY1;
-
-            const distance1 = this.pointerMeasurers[0].distance;
-            this.distanceDelta = distance1 - this.distance;
-            this.distance = distance1;
-
-            const angle1 = this.pointerMeasurers[0].angle;
-            this.angleDelta = angle1 - this.angle;
-            this.angle = angle1;
-        }
-
-        if(this.pointerMeasurers.length > 1){
-            const distanceBetween1 = this.pointerMeasurers[0].distanceBetween(this.pointerMeasurers[1]);
-            this.distanceBetweenDelta = this.distanceBetween?distanceBetween1 - this.distanceBetween:null;
-            this.distanceBetween = distanceBetween1;
-
-            const angleBetween1 = this.pointerMeasurers[0].angleBetween(this.pointerMeasurers[1]);
-            this.angleBetweenDelta = this.angleBetween?angleBetween1 - this.angleBetween:null;
-            this.angleBetween = angleBetween1;
-        }
+        this.setEvent(event);
 
         this.target.dispatchEvent((new CustomEvent('custompointermove', this.options(event))));
     }
@@ -330,6 +342,8 @@ class CustomPointerEventHandler{
         if(pointer){
             pointer.setEvent(event)
         }
+
+        this.setEvent(event);
 
         this.target.dispatchEvent((new CustomEvent('custompointerup', this.options(event))));
 
@@ -354,7 +368,7 @@ class CustomPointerEventHandler{
         }
 
         if(this.pointerMeasurers.length === 0){
-            this.maxPointerNumber = 0;
+            this.reset();
             window.removeEventListener('pointermove',this.cbPointermove);
             window.removeEventListener('pointerup',this.cbPointerup);
             window.removeEventListener('pointercancel',this.cbPointercancel);
@@ -376,6 +390,8 @@ class CustomPointerEventHandler{
         if(pointer){
             pointer.setEvent(event)
         }
+
+        this.setEvent(event);
 
         this.target.dispatchEvent((new CustomEvent('custompointercancel', this.options(event))));
 
@@ -400,7 +416,7 @@ class CustomPointerEventHandler{
         }
 
         if(this.pointerMeasurers.length === 0){
-            this.maxPointerNumber = 0;
+            this.reset();
             window.removeEventListener('pointermove',this.cbPointermove);
             window.removeEventListener('pointerup',this.cbPointerup);
             window.removeEventListener('pointercancel',this.cbPointercancel);

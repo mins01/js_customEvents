@@ -43,9 +43,9 @@
 	<script src="../CustomGestureEventHandler.js"></script>
 	<script>
 		// CustomPointerEventHandler.getInstance().debug = true;
-		CustomPointerEventHandler.active();
+		CustomPointerEventHandler.activate();
 		// CustomGestureEventHandler.getInstance().debug = true;
-		CustomGestureEventHandler.active();
+		CustomGestureEventHandler.activate();
 	</script>
 	<style>
 		.event-area-wrap{position: relative;margin:20px auto; width: 300px;height: 300px;}
@@ -83,12 +83,12 @@
 
 		<hr>
 		<div class="text-center mb-1">
-			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.active()" >CustomPointerEventHandler.active</button>
-			<button type="button" class="btn btn-danger" onclick="CustomPointerEventHandler.deactive()" >CustomPointerEventHandler.deactive</button>
+			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.activate()" >CustomPointerEventHandler.activate</button>
+			<button type="button" class="btn btn-danger" onclick="CustomPointerEventHandler.deactivate()" >CustomPointerEventHandler.deactivate</button>
 		</div>
 		<div class="text-center">
-			<button type="button" class="btn btn-success" onclick="CustomGestureEventHandler.active()" >CustomGestureEventHandler.active</button>
-			<button type="button" class="btn btn-danger" onclick="CustomGestureEventHandler.deactive()" >CustomGestureEventHandler.deactive</button>
+			<button type="button" class="btn btn-success" onclick="CustomGestureEventHandler.activate()" >CustomGestureEventHandler.activate</button>
+			<button type="button" class="btn btn-danger" onclick="CustomGestureEventHandler.deactivate()" >CustomGestureEventHandler.deactivate</button>
 		</div>
 		<hr>
 		<div class="event-area-wrap" id="event-area-wrap">
