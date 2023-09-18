@@ -15,8 +15,7 @@ class CustomPointerEventHandler{
         pageX:null,
         pageY:null,
         timeStamp:null,
-    }  
-    // static firstTimeStamp = null; // 최초 이벤트의 timeStamp
+    }
     
     // 포인터 이벤트
     pointerMeasurers = []; // 포인터 측정기 들. 멀티
