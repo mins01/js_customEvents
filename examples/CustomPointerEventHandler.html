@@ -42,7 +42,7 @@
 	<script src="../CustomPointerEventHandler.js"></script>
 	<script>
 		// CustomPointerEventHandler.getInstance().debug = true;
-		CustomPointerEventHandler.active();
+		CustomPointerEventHandler.activate();
 		let customPointerEventHandler = new CustomPointerEventHandler();  // 이벤트 비교용.
 	</script>
 	<style>
@@ -110,7 +110,7 @@
 		<ul class="list-group"> 
 			<li class="list-group-item">customPointerEventHandler = static CustomPointerEventHandler.instance // 디버깅용</li>
 			<li class="list-group-item">bool = CustomPointerEventHandler::debug // 디버깅용</li>
-			<li class="list-group-item">bool = CustomPointerEventHandler::actived // 동작상태</li>
+			<li class="list-group-item">bool = CustomPointerEventHandler::activated // 동작상태</li>
 			<li class="list-group-item">Window|Document|HTMLElement = CustomPointerEventHandler::listener // 이벤트 적용 위치</li>
 			<li class="list-group-item">HTMLElement = CustomPointerEventHandler::target // 이벤트 발생 HTMLElement</li>
 
@@ -157,8 +157,8 @@
 		
 		<hr>
 		<div class="text-center">
-			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.active()" >active</button>
-			<button type="button" class="btn btn-danger" onclick="CustomPointerEventHandler.deactive()" >deactive</button>
+			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.activate()" >activate</button>
+			<button type="button" class="btn btn-danger" onclick="CustomPointerEventHandler.deactivate()" >deactivate</button>
 		</div>
 		<hr>
 		<div class="event-area-wrap" id="event-area-wrap">

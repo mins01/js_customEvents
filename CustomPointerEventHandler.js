@@ -7,7 +7,7 @@ class CustomPointerEventHandler{
     static instance = null;
 
     debug = false;
-    actived = false; //동작
+    activated = false; //동작
     listener = null; // 이벤트를 붙이는 대상. 기본은 window
     target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
     // 최초 정보
@@ -55,16 +55,16 @@ class CustomPointerEventHandler{
     }
     //=== 전역 메소드 
     // 동작 on
-    static active(){
+    static activate(){
         let instance = this.getInstance();
-        instance.printDebug('active');
+        instance.printDebug('activate');
         if(!globalThis?.window){ throw('window is not exists'); }
         instance.addEventListener(globalThis?.window);
     }
     // 동작 off
-    static deactive(){
+    static deactivate(){
         let instance = this.getInstance();
-        instance.printDebug('deactive');
+        instance.printDebug('deactivate');
         instance.removeEventListener();
     }
 
@@ -72,8 +72,9 @@ class CustomPointerEventHandler{
         this.reset();
     }
 
+    // 내부 변수 초기화
     reset(){
-        this.actived = false; //동작
+        this.activated = false; //동작
         this.listener = null; // 이벤트를 붙이는 대상. 기본은 window
         this.target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
         // 최초 정보
@@ -112,15 +113,16 @@ class CustomPointerEventHandler{
 
     // 동작 이벤트 등록
     addEventListener(listener){
-        if(this.actived){ console.warn('already actived'); }
+        if(this.activated){ console.warn('already activated'); }
         this.listener = listener
-        this.actived = true;
+        this.activated = true;
         this.listener.addEventListener('pointerdown',this.cbPointerdown);
     }
 
     // 동작 이벤트 제거
     removeEventListener(){
-        this.actived = false;
+        if(!this.activated){ console.warn('not activated'); }
+        this.activated = false;
         this.listener.removeEventListener('pointerdown',this.cbPointerdown);
     }
 
