@@ -80,7 +80,64 @@
 		<ul class="list-group">
 			<li class="list-group-item">CustomPointerEvent 기반으로 CustomGestureEvent를 발생시킨다.</li>
 		</ul>
+		<hr>
+		<h2>SPECIFICATION</h2>
+		<h3>constructor</h3>
+		<ul class="list-group">
+			<li class="list-group-item">customGestureEventHandler = new CustomGestureEventHandler()</li>
+			<li class="list-group-item">CustomGestureEventHandler = static CustomGestureEventHandler.getInstance() // 싱글톤. window 객체 기반을 동작</li>
+		</ul>
+		<h3>property</h3>
+		<ul class="list-group"> 
+			<li class="list-group-item">customGestureEventHandler = static CustomGestureEventHandler.instance // 디버깅용</li>
+			<li class="list-group-item">bool = customGestureEventHandler.debug // 디버깅용</li>
+			<li class="list-group-item">bool = customGestureEventHandler.activated // 동작상태</li>
+			<li class="list-group-item">Window|Document|HTMLElement = customGestureEventHandler.listener // 이벤트 적용 위치</li>
+			<li class="list-group-item">HTMLElement = customGestureEventHandler.target // 이벤트 발생 HTMLElement</li>
 
+			<li class="list-group-item">Array = customGestureEventHandler.customPointers // coustomPointer 들. 멀티 터치 등에 맞춰서 늘어난다.</li>
+			<li class="list-group-item">int = customGestureEventHandler.maxPointerNumber // down 이벤트 후 발생된 포인터 최대 수</li>
+			<li class="list-group-item">number = customGestureEventHandler.distanceX // Primary 포인터의 X축 이동 거리</li>
+			<li class="list-group-item">number = customGestureEventHandler.distanceY // Primary 포인터의 Y축 이동 거리</li>
+			<li class="list-group-item">number = customGestureEventHandler.distance // Primary 포인터의 이동 거리</li>
+			<li class="list-group-item">number = customGestureEventHandler.distanceDeltaX // Primary 포인터의 X축 이동 거리 변화량</li>
+			<li class="list-group-item">number = customGestureEventHandler.distanceDeltaY // Primary 포인터의 Y축 이동 거리 변화량</li>
+			<li class="list-group-item">number = customGestureEventHandler.distanceDelta // Primary 포인터의 이동 거리 변화량</li>
+
+			<li class="list-group-item">number = customGestureEventHandler.distanceBetween // 멀티포인터 1,2번째 사이의 거리</li>
+			<li class="list-group-item">number = customGestureEventHandler.distanceBetweenDelta // 멀티포인터 1,2번째 사이의 거리 변화량</li>
+			<li class="list-group-item">number = customGestureEventHandler.angleBetween // 멀티포인터 1,2번째 사이의 각도</li>
+			<li class="list-group-item">number = customGestureEventHandler.angleBetweenDelta // 멀티포인터 1,2번째 사이의 각도 변화량</li>
+			
+			<li class="list-group-item">number (ms) = getter customGestureEventHandler.duration // Primary 포인터의 걸린 시간</li>
+			<li class="list-group-item">number (px/ms)= getter customGestureEventHandler.velocityX // Primary 포인터의 X축 가속도</li>
+			<li class="list-group-item">number (px/ms)= getter customGestureEventHandler.velocityY // Primary 포인터의 Y축 가속도</li>
+			<li class="list-group-item">number (px/ms)= getter customGestureEventHandler.velocity // Primary 포인터의 가속도</li>
+			
+			<li class="list-group-item">true = customGestureEventHandler.bubbles // CustomPointerEvent 발생 시 설정</li>
+			<li class="list-group-item">true = customGestureEventHandler.cancelable // CustomPointerEvent 발생 시 설정</li>
+			<li class="list-group-item">true = customGestureEventHandler.composed // CustomPointerEvent 발생 시 설정</li>
+			
+
+
+
+		</ul>
+		<h3>method</h3>
+		<ul class="list-group">
+			<li class="list-group-item">null = customGestureEventHandler.cbPointerdown(event) // pointerdown 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = customGestureEventHandler.cbPointermove(event) // pointermove 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = customGestureEventHandler.cbPointerup(event) // pointerup 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = customGestureEventHandler.cbPointercancel(event) // pointercancel 이벤트 리스너 등록용 콜백 화살표 함수</li>
+
+			<li class="list-group-item">null = customGestureEventHandler.pointerdown(event) // pointerdown 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = customGestureEventHandler.pointermove(event) // pointermove 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = customGestureEventHandler.pointerup(event) // pointerup 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = customGestureEventHandler.pointercancel(event) // pointercancel 이벤트 처리 메소드</li>
+			
+			<li class="list-group-item">null = customGestureEventHandler.setEvent(event) // 이벤트 기준 내부 변수 계산</li>
+			<li class="list-group-item">null = customGestureEventHandler.reset() // 내부 변수 초기화</li>
+			
+		</ul>
 		<hr>
 		<div class="text-center mb-1">
 			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.activate()" >CustomPointerEventHandler.activate</button>
@@ -93,54 +150,16 @@
 		<hr>
 		<div class="event-area-wrap" id="event-area-wrap">
 			<div class="event-area" id="event-area" style="left:0;top:0; touch-action: none;user-select: none;">
-				<div class="event-target" id="event-target" style="left:0;top:0; pointer-events: none;">target</div>
+				<div class="event-target" id="event-target" style="left:0;top:0; ">target</div>
 			</div>
 		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">swipeleft</span>
-			</div>
-			<input type="text" class="form-control" readonly id="swipeleft-distanceX">
-		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">swiperight</span>
-			</div>
-			<input type="text" class="form-control" readonly id="swiperight-distanceX">
-		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">swipeup</span>
-			</div>
-			<input type="text" class="form-control" readonly id="swipeup-distanceY">
-		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">swipedown</span>
-			</div>
-			<input type="text" class="form-control" readonly id="swipedown-distanceY">
-		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">pinch</span>
-			</div>
-			<input type="text" class="form-control" readonly id="pinch-distanceBetweenDelta">
-		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">zoom</span>
-			</div>
-			<input type="text" class="form-control" readonly id="zoom-distanceBetweenDelta">
-		</div>
-		<div class="input-group input-group-sm">
-			<div class="input-group-prepend">
-			  <span class="input-group-text">rotate</span>
-			</div>
-			<input type="text" class="form-control" readonly id="rotate-angleBetweenDelta">
-		</div>
-
 		
 
+		<h3>gestures</h3>
+		<div id="text-gestures" style="white-space: break-spaces; font-size: 8px;">
+
+		</div>
+		<h3>detail</h3>
 		<div id="text-detail" style="white-space: break-spaces; font-size: 8px;">
 
 		</div>
@@ -155,13 +174,21 @@
 			target._rotate = 0;
 			function target_transform(){
 				target.style.transform = `translate(${target._x}px,${target._y}px) scale(${target._scale}) rotate(${target._rotate}rad)`;
-
 			}
-			// area.addEventListener('custompointerdown',function(event){
-			// 	console.log(event.type,event.detail);
-			// })
+			function text_gestures(msg){
+				text_gestures.msgs.push(msg);
+				if(text_gestures.msgs.length>5){
+					text_gestures.msgs.shift()
+				}
+				document.querySelector('#text-gestures').textContent = Array.from(text_gestures.msgs).reverse().join("\n");
+			}
+			text_gestures.msgs = [];
 
-			area.addEventListener('custompointermove',function(event){
+			target.addEventListener('custompointerdown',function(event){
+				console.log(event.type,event.detail);
+			})
+
+			target.addEventListener('custompointermove',function(event){
 				console.log(event.type,event.detail);
 				if(event.detail.pointerNumber == 1 && event.detail.maxPointerNumber == 1){
 					target._x = event.detail.distanceX;
@@ -169,14 +196,15 @@
 				}
 				target_transform();
 			})
-			area.addEventListener('custompointerup',function(event){
+			target.addEventListener('custompointerup',function(event){
 				console.log(event.type,event.detail);
 				target._x = 0;
 				target._y = 0;
 				target_transform();
 			})
-			area.addEventListener('longpress',function(event){
+			target.addEventListener('longpress',function(event){
 				console.log(event.type,event.detail);
+				text_gestures(event.type)
 				target.textContent = event.type;
 				target.classList.toggle('on')
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
@@ -187,47 +215,47 @@
 			// 	document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			// })
 
-			area.addEventListener('swipeleft',function(event){
+			target.addEventListener('swipeleft',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swipeleft-distanceX').value = event.detail.distanceX;
+				text_gestures(event.type+" , "+event.detail.distanceX+" , "+event.detail.velocityX)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
 			})
-			area.addEventListener('swiperight',function(event){
+			target.addEventListener('swiperight',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swiperight-distanceX').value = event.detail.distanceX;
+				text_gestures(event.type+" , "+event.detail.distanceX+" , "+event.detail.velocityX)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
-			area.addEventListener('swipeup',function(event){
+			target.addEventListener('swipeup',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swipeup-distanceY').value = event.detail.distanceY;
+				text_gestures(event.type+" , "+event.detail.distanceY+" , "+event.detail.velocityY)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
-			area.addEventListener('swipedown',function(event){
+			target.addEventListener('swipedown',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#swipedown-distanceY').value = event.detail.distanceY;
+				text_gestures(event.type+" , "+event.detail.distanceY+" , "+event.detail.velocityY)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 
-			area.addEventListener('pinch',function(event){
+			target.addEventListener('pinch',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#pinch-distanceBetweenDelta').value = event.detail.distanceBetweenDelta;
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
-
-				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.distanceBetweenDelta/100));
-				target_transform();
-			})
-			area.addEventListener('zoom',function(event){
-				console.log(event.type,event.detail);
-				document.querySelector('#zoom-distanceBetweenDelta').value = event.detail.distanceBetweenDelta;
+				text_gestures(event.type+" , "+event.detail.distanceBetweenDelta)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
 				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.distanceBetweenDelta/100));
 				target_transform();
 			})
-			area.addEventListener('rotate',function(event){
+			target.addEventListener('zoom',function(event){
 				console.log(event.type,event.detail);
-				document.querySelector('#rotate-angleBetweenDelta').value = event.detail.angleBetweenDelta;
+				text_gestures(event.type+" , "+event.detail.distanceBetweenDelta)
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
+
+				target._scale = Math.min(2,Math.max(0.2,target._scale + event.detail.distanceBetweenDelta/100));
+				target_transform();
+			})
+			target.addEventListener('rotate',function(event){
+				console.log(event.type,event.detail);
+				text_gestures(event.type+" , "+event.detail.angleBetweenDelta)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 				target._rotate += event.detail.angleBetweenDelta;
 				target_transform();

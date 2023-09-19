@@ -97,64 +97,83 @@
         <hr>
 		<h2>설명</h2>
 		<ul class="list-group">
-			<li class="list-group-item">CustomPointer 와 pointer event를 활용하여 포인터 제어 CustomPointerEvent 를 발생한다</li>
+			<li class="list-group-item">PointerMeasurer 와 pointer event를 활용하여 포인터 제어 CustomPointerEvent 를 발생한다</li>
 		</ul>
 		<hr>
 		<h2>SPECIFICATION</h2>
 		<h3>constructor</h3>
 		<ul class="list-group">
-			<li class="list-group-item">customPointerEventHandler = new CustomPointerEventHandler()</li>
+			<li class="list-group-item">const customPointerEventHandler = new CustomPointerEventHandler()</li>
 			<li class="list-group-item">customPointerEventHandler = static CustomPointerEventHandler.getInstance() // 싱글톤. window 객체 기반을 동작</li>
 		</ul>
 		<h3>property</h3>
 		<ul class="list-group"> 
 			<li class="list-group-item">customPointerEventHandler = static CustomPointerEventHandler.instance // 디버깅용</li>
-			<li class="list-group-item">bool = CustomPointerEventHandler::debug // 디버깅용</li>
-			<li class="list-group-item">bool = CustomPointerEventHandler::activated // 동작상태</li>
-			<li class="list-group-item">Window|Document|HTMLElement = CustomPointerEventHandler::listener // 이벤트 적용 위치</li>
-			<li class="list-group-item">HTMLElement = CustomPointerEventHandler::target // 이벤트 발생 HTMLElement</li>
+			<li class="list-group-item">bool = customPointerEventHandler.debug // 디버깅용</li>
+			<li class="list-group-item">bool = customPointerEventHandler.activated // 동작상태</li>
+			<li class="list-group-item">Window|Document|HTMLElement = customPointerEventHandler.listener // 이벤트 적용 위치</li>
+			<li class="list-group-item">HTMLElement = customPointerEventHandler.target // 이벤트 발생 HTMLElement</li>
 
-			<li class="list-group-item">Array = CustomPointerEventHandler::customPointers // coustomPointer 들. 멀티 터치 등에 맞춰서 늘어난다.</li>
-			<li class="list-group-item">int = CustomPointerEventHandler::maxPointerNumber // down 이벤트 후 발생된 포인터 최대 수</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceX // Primary 포인터의 X축 이동 거리</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceY // Primary 포인터의 Y축 이동 거리</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distance // Primary 포인터의 이동 거리</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceDeltaX // Primary 포인터의 X축 이동 거리 변화량</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceDeltaY // Primary 포인터의 Y축 이동 거리 변화량</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceDelta // Primary 포인터의 이동 거리 변화량</li>
+			<li class="list-group-item">Array = customPointerEventHandler.customPointers // coustomPointer 들. 멀티 터치 등에 맞춰서 늘어난다.</li>
+			<li class="list-group-item">int = customPointerEventHandler.maxPointerNumber // down 이벤트 후 발생된 포인터 최대 수</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceX // Primary 포인터의 X축 이동 거리</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceY // Primary 포인터의 Y축 이동 거리</li>
+			<li class="list-group-item">number = customPointerEventHandler.distance // Primary 포인터의 이동 거리</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceDeltaX // Primary 포인터의 X축 이동 거리 변화량</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceDeltaY // Primary 포인터의 Y축 이동 거리 변화량</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceDelta // Primary 포인터의 이동 거리 변화량</li>
 
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceBetween // 멀티포인터 1,2번째 사이의 거리</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::distanceBetweenDelta // 멀티포인터 1,2번째 사이의 거리 변화량</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::angleBetween // 멀티포인터 1,2번째 사이의 각도</li>
-			<li class="list-group-item">number = CustomPointerEventHandler::angleBetweenDelta // 멀티포인터 1,2번째 사이의 각도 변화량</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceBetween // 멀티포인터 1,2번째 사이의 거리</li>
+			<li class="list-group-item">number = customPointerEventHandler.distanceBetweenDelta // 멀티포인터 1,2번째 사이의 거리 변화량</li>
+			<li class="list-group-item">number = customPointerEventHandler.angleBetween // 멀티포인터 1,2번째 사이의 각도</li>
+			<li class="list-group-item">number = customPointerEventHandler.angleBetweenDelta // 멀티포인터 1,2번째 사이의 각도 변화량</li>
 			
-			<li class="list-group-item">number (ms) = getter CustomPointerEventHandler::duration // Primary 포인터의 걸린 시간</li>
-			<li class="list-group-item">number (px/ms)= getter CustomPointerEventHandler::velocityX // Primary 포인터의 X축 가속도</li>
-			<li class="list-group-item">number (px/ms)= getter CustomPointerEventHandler::velocityY // Primary 포인터의 Y축 가속도</li>
-			<li class="list-group-item">number (px/ms)= getter CustomPointerEventHandler::velocity // Primary 포인터의 가속도</li>
+			<li class="list-group-item">number (ms) = getter customPointerEventHandler.duration // Primary 포인터의 걸린 시간</li>
+			<li class="list-group-item">number (px/ms) = getter customPointerEventHandler.velocityX // Primary 포인터의 X축 가속도</li>
+			<li class="list-group-item">number (px/ms) = getter customPointerEventHandler.velocityY // Primary 포인터의 Y축 가속도</li>
+			<li class="list-group-item">number (px/ms) = getter customPointerEventHandler.velocity // Primary 포인터의 가속도</li>
 			
-			<li class="list-group-item">true = CustomPointerEventHandler::bubbles // CustomPointerEvent 발생 시 설정</li>
-			<li class="list-group-item">true = CustomPointerEventHandler::cancelable // CustomPointerEvent 발생 시 설정</li>
-			<li class="list-group-item">true = CustomPointerEventHandler::composed // CustomPointerEvent 발생 시 설정</li>
-			
-
-
-
+			<li class="list-group-item">true = customPointerEventHandler.bubbles // CustomPointerEvent 발생 시 설정</li>
+			<li class="list-group-item">true = customPointerEventHandler.cancelable // CustomPointerEvent 발생 시 설정</li>
+			<li class="list-group-item">true = customPointerEventHandler.composed // CustomPointerEvent 발생 시 설정</li>
 		</ul>
 		<h3>method</h3>
 		<ul class="list-group">
-			<li class="list-group-item">null = CustomPointerEventHandler::cbPointerdown(event) // pointerdown 이벤트 리스너 등록용 콜백 화살표 함수</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::cbPointermove(event) // pointermove 이벤트 리스너 등록용 콜백 화살표 함수</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::cbPointerup(event) // pointerup 이벤트 리스너 등록용 콜백 화살표 함수</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::cbPointercancel(event) // pointercancel 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">customPointerEventHandler = static CustomPointerEventHandler.getInstance() // 싱글톤 객체 생성</li>
+			<li class="list-group-item">void = static CustomPointerEventHandler.activate() // window 기준으로 동작 시작 (싱글톤)</li>
+			<li class="list-group-item">void = static CustomPointerEventHandler.deactivate() // window 기준으로 동작 중지 (싱글톤)</li>
 
-			<li class="list-group-item">null = CustomPointerEventHandler::pointerdown(event) // pointerdown 이벤트 처리 메소드</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::pointermove(event) // pointermove 이벤트 처리 메소드</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::pointerup(event) // pointerup 이벤트 처리 메소드</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::pointercancel(event) // pointercancel 이벤트 처리 메소드</li>
+			<li class="list-group-item">void = customPointerEventHandler.addEventListener(listener) // listener 에 CustomPointerEventHandler 동작 시작</li>
+			<li class="list-group-item">void = customPointerEventHandler.removeEventListener() // CustomPointerEventHandler 동작 중지</li>
 			
-			<li class="list-group-item">null = CustomPointerEventHandler::setEvent(event) // 이벤트 기준 내부 변수 계산</li>
-			<li class="list-group-item">null = CustomPointerEventHandler::reset() // 내부 변수 초기화</li>
+			<li class="list-group-item">pointerMeasurer = customPointerEventHandler.generatePointerMeasurer(event) // event 기준 PointerMeasurer 객체 생성</li>
+			<li class="list-group-item">object = customPointerEventHandler.options(event,message) // CustomEvent 용 option</li>
+			<li class="list-group-item">object = customPointerEventHandler.detail(event,message) // CustomEvent 용 option.detail</li>
+
+			<li class="list-group-item">null = customPointerEventHandler.setEvent(event) // 이벤트 기준 내부 변수 계산</li>
+			<li class="list-group-item">null = customPointerEventHandler.reset() // 내부 변수 초기화</li>
+
+
+			<li class="list-group-item">null = customPointerEventHandler.cbPointerdown(event) // pointerdown 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = customPointerEventHandler.cbPointermove(event) // pointermove 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = customPointerEventHandler.cbPointerup(event) // pointerup 이벤트 리스너 등록용 콜백 화살표 함수</li>
+			<li class="list-group-item">null = customPointerEventHandler.cbPointercancel(event) // pointercancel 이벤트 리스너 등록용 콜백 화살표 함수</li>
+
+			<li class="list-group-item">null = customPointerEventHandler.pointerdown(event) // pointerdown 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = customPointerEventHandler.pointermove(event) // pointermove 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = customPointerEventHandler.pointerup(event) // pointerup 이벤트 처리 메소드</li>
+			<li class="list-group-item">null = customPointerEventHandler.pointercancel(event) // pointercancel 이벤트 처리 메소드</li>
+			
+			
+		</ul>
+
+		<h3>event</h3>
+		<ul class="list-group">
+			<li class="list-group-item">custompointerdown // pointerdown 발생 때</li>
+			<li class="list-group-item">custompointermove // pointermove 발생 때</li>
+			<li class="list-group-item">custompointerup // pointerup 발생 때</li>
+			<li class="list-group-item">custompointercancel // pointercancel 발생 때</li>
+			<li class="list-group-item">CustomEvent 로 발생시킨다.</li>
 			
 		</ul>
 		
