@@ -9,11 +9,10 @@ class CustomGestureEventHandler{
     // 디버깅 여부
     debug = false;
 
+    // 
     activated = false; //동작
     listener = null; // 이벤트를 붙이는 대상. 기본은 window
     target = null; // 최초 이벤트 발생 요소(pointerdown 에서 event.target)
-
-    // lastDetail = null;
 
     // 커스텀 이벤트 옵션 값 설정
     bubbles = true; // 이벤트 버블 가능?
@@ -166,20 +165,24 @@ class CustomGestureEventHandler{
             // this.target.dispatchEvent((new CustomEvent('longpresscancel', this.options(event,'custompointerup before longPressTimeout'))));
         }
         //----- swipe
-        if(Math.abs(event.detail.distanceX) >= this.swipeDistanceThreshold && event.detail.velocityX >= this.swipeVelocityThreshold ){
-            if(event.detail.distanceX < 0){
-                this.target.dispatchEvent((new CustomEvent('swipeleft', this.options(event))));
-            }else{
-                this.target.dispatchEvent((new CustomEvent('swiperight', this.options(event))));
+        {
+            let absX = Math.abs(event.detail.distanceX);
+            let absY = Math.abs(event.detail.distanceY);
+            if(absX >= absY && absX >= this.swipeDistanceThreshold && event.detail.velocityX >= this.swipeVelocityThreshold ){
+                if(event.detail.distanceX < 0){
+                    this.target.dispatchEvent((new CustomEvent('swipeleft', this.options(event))));
+                }else{
+                    this.target.dispatchEvent((new CustomEvent('swiperight', this.options(event))));
+                }
+            }else if(absY >= this.swipeDistanceThreshold && event.detail.velocityY >= this.swipeVelocityThreshold){
+                if(event.detail.distanceY < 0){
+                    this.target.dispatchEvent((new CustomEvent('swipeup', this.options(event))));
+                }else{
+                    this.target.dispatchEvent((new CustomEvent('swipedown', this.options(event))));
+                }
             }
         }
-        if(Math.abs(event.detail.distanceY) >= this.swipeDistanceThreshold && event.detail.velocityY >= this.swipeVelocityThreshold){
-            if(event.detail.distanceY < 0){
-                this.target.dispatchEvent((new CustomEvent('swipeup', this.options(event))));
-            }else{
-                this.target.dispatchEvent((new CustomEvent('swipedown', this.options(event))));
-            }
-        }
+        
 
         window.removeEventListener('custompointermove',this.cbCustompointermove);
         window.removeEventListener('custompointerup',this.cbCustompointerup);
