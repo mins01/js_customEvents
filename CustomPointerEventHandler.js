@@ -86,7 +86,7 @@ class CustomPointerEventHandler{
             pageX:null,
             pageY:null,
             timeStamp:null,
-        }  
+        }
         
         // 포인터 이벤트
         this.pointerMeasurers = []; // 포인터 측정기 들. 멀티
@@ -200,7 +200,7 @@ class CustomPointerEventHandler{
     get duration(){
         if(this.pointerMeasurers.length < 1){ return null; }
         // 가장 마지막 이벤트 timeStamp -  최초 이벤트 timeStamp
-        return this.pointerMeasurers[this.pointerMeasurers.length - 1].current.timeStamp - this.first.timeStamp;
+        return this.pointerMeasurers[this.pointerMeasurers.length - 1].timeStamp - this.first.timeStamp;
     }  
 
     get velocityX(){
