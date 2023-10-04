@@ -89,30 +89,11 @@
 		</ul>
 		<h3>property</h3>
 		<ul class="list-group"> 
-			<li class="list-group-item">customGestureEventHandler = static CustomGestureEventHandler.instance // 디버깅용</li>
+			<li class="list-group-item">customGestureEventHandler = static CustomGestureEventHandler.instance // 싱글톤 객체</li>
 			<li class="list-group-item">bool = customGestureEventHandler.debug // 디버깅용</li>
 			<li class="list-group-item">bool = customGestureEventHandler.activated // 동작상태</li>
 			<li class="list-group-item">Window|Document|HTMLElement = customGestureEventHandler.listener // 이벤트 적용 위치</li>
 			<li class="list-group-item">HTMLElement = customGestureEventHandler.target // 이벤트 발생 HTMLElement</li>
-
-			<li class="list-group-item">Array = customGestureEventHandler.customPointers // coustomPointer 들. 멀티 터치 등에 맞춰서 늘어난다.</li>
-			<li class="list-group-item">int = customGestureEventHandler.maxPointerNumber // down 이벤트 후 발생된 포인터 최대 수</li>
-			<li class="list-group-item">number = customGestureEventHandler.distanceX // Primary 포인터의 X축 이동 거리</li>
-			<li class="list-group-item">number = customGestureEventHandler.distanceY // Primary 포인터의 Y축 이동 거리</li>
-			<li class="list-group-item">number = customGestureEventHandler.distance // Primary 포인터의 이동 거리</li>
-			<li class="list-group-item">number = customGestureEventHandler.distanceDeltaX // Primary 포인터의 X축 이동 거리 변화량</li>
-			<li class="list-group-item">number = customGestureEventHandler.distanceDeltaY // Primary 포인터의 Y축 이동 거리 변화량</li>
-			<li class="list-group-item">number = customGestureEventHandler.distanceDelta // Primary 포인터의 이동 거리 변화량</li>
-
-			<li class="list-group-item">number = customGestureEventHandler.distanceBetween // 멀티포인터 1,2번째 사이의 거리</li>
-			<li class="list-group-item">number = customGestureEventHandler.distanceBetweenDelta // 멀티포인터 1,2번째 사이의 거리 변화량</li>
-			<li class="list-group-item">number = customGestureEventHandler.angleBetween // 멀티포인터 1,2번째 사이의 각도</li>
-			<li class="list-group-item">number = customGestureEventHandler.angleBetweenDelta // 멀티포인터 1,2번째 사이의 각도 변화량</li>
-			
-			<li class="list-group-item">number (ms) = getter customGestureEventHandler.duration // Primary 포인터의 걸린 시간</li>
-			<li class="list-group-item">number (px/ms)= getter customGestureEventHandler.velocityX // Primary 포인터의 X축 가속도</li>
-			<li class="list-group-item">number (px/ms)= getter customGestureEventHandler.velocityY // Primary 포인터의 Y축 가속도</li>
-			<li class="list-group-item">number (px/ms)= getter customGestureEventHandler.velocity // Primary 포인터의 가속도</li>
 			
 			<li class="list-group-item">true = customGestureEventHandler.bubbles // CustomPointerEvent 발생 시 설정</li>
 			<li class="list-group-item">true = customGestureEventHandler.cancelable // CustomPointerEvent 발생 시 설정</li>
@@ -138,6 +119,24 @@
 			<li class="list-group-item">null = customGestureEventHandler.reset() // 내부 변수 초기화</li>
 			
 		</ul>
+		<h3>event</h3>
+		<ul class="list-group">
+			<li class="list-group-item">pinch</li>
+			<li class="list-group-item">zoom</li>
+			<li class="list-group-item">rotate</li>
+			<li class="list-group-item">doubletab</li>
+			<li class="list-group-item">tab</li>
+			<li class="list-group-item">longpress</li>
+			<li class="list-group-item">swipeleft</li>
+			<li class="list-group-item">swiperight</li>
+			<li class="list-group-item">swipeup</li>
+			<li class="list-group-item">swipedown</li>
+
+			<li class="list-group-item">CustomEvent 로 발생시킨다.</li>
+			
+		</ul>
+
+
 		<hr>
 		<div class="text-center mb-1">
 			<button type="button" class="btn btn-success" onclick="CustomPointerEventHandler.activate()" >CustomPointerEventHandler.activate</button>
@@ -177,7 +176,7 @@
 			}
 			function text_gestures(msg){
 				text_gestures.msgs.push(msg);
-				if(text_gestures.msgs.length>5){
+				if(text_gestures.msgs.length>10){
 					text_gestures.msgs.shift()
 				}
 				document.querySelector('#text-gestures').textContent = Array.from(text_gestures.msgs).reverse().join("\n");
@@ -185,11 +184,11 @@
 			text_gestures.msgs = [];
 
 			target.addEventListener('custompointerdown',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 			})
 
 			target.addEventListener('custompointermove',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				if(event.detail.pointerNumber == 1 && event.detail.maxPointerNumber == 1){
 					target._x = event.detail.distanceX;
 					target._y = event.detail.distanceY;
@@ -197,48 +196,37 @@
 				target_transform();
 			})
 			target.addEventListener('custompointerup',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				target._x = 0;
 				target._y = 0;
 				target_transform();
 			})
-			target.addEventListener('longpress',function(event){
-				console.log(event.type,event.detail);
-				text_gestures(event.type)
-				target.textContent = event.type;
-				target.classList.toggle('on')
-				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
-			})
-			// longpresscancel 사용안함
-			// area.addEventListener('longpresscancel',function(event){
-			// 	console.log(event.type,event.detail,event.detail.message);
-			// 	document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
-			// })
+			
 
 			target.addEventListener('swipeleft',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.distanceX+" , "+event.detail.velocityX)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
 			})
 			target.addEventListener('swiperight',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.distanceX+" , "+event.detail.velocityX)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 			target.addEventListener('swipeup',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.distanceY+" , "+event.detail.velocityY)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 			target.addEventListener('swipedown',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.distanceY+" , "+event.detail.velocityY)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 
 			target.addEventListener('pinch',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.distanceBetweenDelta)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
@@ -246,7 +234,7 @@
 				target_transform();
 			})
 			target.addEventListener('zoom',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.distanceBetweenDelta)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 
@@ -254,11 +242,49 @@
 				target_transform();
 			})
 			target.addEventListener('rotate',function(event){
-				console.log(event.type,event.detail);
+				// console.log(event.type,event.detail);
 				text_gestures(event.type+" , "+event.detail.angleBetweenDelta)
 				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 				target._rotate += event.detail.angleBetweenDelta;
 				target_transform();
+			})
+
+			// target.addEventListener('click',function(event){
+			// 	console.log(event.type,event.detail);
+			// 	text_gestures(event.type+" , "+event.detail.angleBetweenDelta)
+			// 	document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
+			// 	target._rotate += event.detail.angleBetweenDelta;
+			// 	target_transform();
+			// })
+			// target.addEventListener('dblclick',function(event){
+			// 	// console.log(event.type,event.detail);
+			// 	text_gestures(event.type)
+			// 	// document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
+			// 	// target._rotate += event.detail.angleBetweenDelta;
+			// 	target_transform();
+			// })
+
+			target.addEventListener('tab',function(event){
+				// console.log(event.type,event.detail);
+				text_gestures(event.type+" , "+event.detail.duration+'ms')
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
+				target.textContent = event.type;
+				target_transform();
+			})
+			target.addEventListener('doubletab',function(event){
+				// console.log(event.type,event.detail);
+				text_gestures(event.type+" , "+event.detail.duration+'ms')
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
+				target.textContent = event.type;
+				target_transform();
+			})
+			target.addEventListener('longpress',function(event){
+				// console.log(event.type,event.detail);
+				text_gestures(event.type+" , "+event.detail.duration+'ms')
+				target.textContent = event.type;
+				target.classList.toggle('on')
+				target.textContent = event.type;
+				document.querySelector('#text-detail').textContent = JSON.stringify(event.detail,null,2);
 			})
 			
 		</script>
