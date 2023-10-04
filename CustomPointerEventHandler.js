@@ -154,11 +154,13 @@ class CustomPointerEventHandler{
             isPrimary:event.isPrimary,
             pointerId:event.pointerId,
             event:event, // original event
-            first:Object.assign(this.first), // original event
+            
             message:(message??''),
             pointerNumber:this.pointerNumber,
             maxPointerNumber:this.maxPointerNumber,
 
+
+            firstTimeStamp:this.firstTimeStamp,
             duration:this.duration,
 
             distanceX:this.distanceX,

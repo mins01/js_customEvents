@@ -290,9 +290,6 @@ class CustomGestureEventHandler{
             let activeDoubleTab = false;
             if(this.constructor.tabLastTimeStamp && Date.now() - this.constructor.tabLastTimeStamp < this.doubleTabTimeout){
                 activeDoubleTab = true;
-                console.log('activeDoubleTabO',Date.now() - this.constructor.tabLastTimeStamp,this.constructor.tabLastTimeStamp);
-            }else{
-                console.log('activeDoubleTabX',Date.now() - this.constructor.tabLastTimeStamp,this.constructor.tabLastTimeStamp);
             }
 
             if(event.detail.duration < this.tabTimeout){
