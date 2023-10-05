@@ -152,6 +152,7 @@ class CustomGestureEventHandler{
     /**
      * listener 에 addEventListener
      * @param {Window|HTMLElement} listener 
+     * @listens CustomPointerEventHandler#custompointerdown
      */
     addEventListener(listener){
         if(this.activated){ console.warn('already activated'); }
@@ -208,6 +209,9 @@ class CustomGestureEventHandler{
     /**
      * customointerdown 이벤트 처리 메소드
      * @param {Event} event 
+     * @listens CustomPointerEventHandler#custompointermove
+     * @listens CustomPointerEventHandler#custompointerup
+     * @listens CustomPointerEventHandler#custompointercancel
      */
     custompointerdown(event){
         this.printDebug('customointerdown');
@@ -280,6 +284,13 @@ class CustomGestureEventHandler{
     /**
      * custompointerup 이벤트 처리 메소드
      * @param {Event} event 
+     * @fires CustomGestureEventHandler#tab
+     * @fires CustomGestureEventHandler#longpress
+     * @fires CustomGestureEventHandler#doubletab
+     * @fires CustomGestureEventHandler#swipeleft
+     * @fires CustomGestureEventHandler#swiperight
+     * @fires CustomGestureEventHandler#swipeup
+     * @fires CustomGestureEventHandler#swipedown
      */
     custompointerup(event){
         this.printDebug('custompointerup');
@@ -293,15 +304,27 @@ class CustomGestureEventHandler{
             }
 
             if(event.detail.duration < this.tabTimeout){
+                /**
+                 * 탭 이벤트
+                 * @event CustomGestureEventHandler#tab
+                 */
                 this.target.dispatchEvent((new CustomEvent('tab', this.options(event))));
                 this.constructor.tabLastTimeStamp = Date.now();
             }else if(event.detail.duration > this.longPressTimeout){
+                /**
+                 * 롱 프레스 이벤트
+                 * @event CustomGestureEventHandler#longpress
+                 */
                 this.target.dispatchEvent((new CustomEvent('longpress', this.options(event))));
                 this.constructor.tabLastTimeStamp = null;
             }
 
 
             if(activeDoubleTab){
+                /**
+                 * 더블탭 이벤트
+                 * @event CustomGestureEventHandler#doubletab
+                 */
                 this.target.dispatchEvent((new CustomEvent('doubletab', this.options(event))));
                 this.constructor.tabLastTimeStamp = null;
             }
@@ -311,14 +334,30 @@ class CustomGestureEventHandler{
             let absY = Math.abs(event.detail.distanceY);
             if(absX >= absY && absX >= this.swipeDistanceThreshold && event.detail.speedX >= this.swipeSpeedThreshold ){
                 if(event.detail.distanceX < 0){
+                    /**
+                     * 스와이프 왼쪽 이벤트
+                     * @event CustomGestureEventHandler#swipeleft
+                     */
                     this.target.dispatchEvent((new CustomEvent('swipeleft', this.options(event))));
                 }else{
+                    /**
+                     * 스와이프 오른쪽 이벤트
+                     * @event CustomGestureEventHandler#swiperight
+                     */
                     this.target.dispatchEvent((new CustomEvent('swiperight', this.options(event))));
                 }
             }else if(absY >= this.swipeDistanceThreshold && event.detail.speedY >= this.swipeSpeedThreshold){
                 if(event.detail.distanceY < 0){
+                    /**
+                     * 스와이프 위 이벤트
+                     * @event CustomGestureEventHandler#swipeup
+                     */
                     this.target.dispatchEvent((new CustomEvent('swipeup', this.options(event))));
                 }else{
+                    /**
+                     * 스와이프 아래 이벤트
+                     * @event CustomGestureEventHandler#swipedown
+                     */
                     this.target.dispatchEvent((new CustomEvent('swipedown', this.options(event))));
                 }
             }
@@ -332,7 +371,7 @@ class CustomGestureEventHandler{
     /**
      * custompointercancel 이벤트 등록 용 화살표 함수
      * @param {Event} event 
-     * @returns {Function}
+     * @returns {method}
      */
     cbCustompointercancel = (event) =>{
         return this.custompointercancel(event)
