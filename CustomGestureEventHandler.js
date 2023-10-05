@@ -6,7 +6,7 @@
 class CustomGestureEventHandler{
     /**
      * 싱글톤 객체
-     * @type {(CustomGestureEventHandler|null)}
+     * @type {?CustomGestureEventHandler}
      */
     static instance = null;
 
@@ -24,13 +24,13 @@ class CustomGestureEventHandler{
     activated = false; //동작
 
     /**
-     * 이벤트 리스너 대상
-     * @type {Window|HTMLElement|null}
+     * 이벤트 리스너 요소
+     * @type {?(Window|HTMLElement)}
      */
     listener = null;
     /**
      * 최초 이벤트 발생 요소 (custompointerdown 에서 event.target)
-     * @type {Window|HTMLElement|null}
+     * @type {?(Window|HTMLElement)}
      */
     target = null;
 
@@ -55,7 +55,7 @@ class CustomGestureEventHandler{
     // tab
     /**
      * 마지막 tab 발생 timeStamp
-     * @type {(number|null)}
+     * @type {?number}
      */
     static tabLastTimeStamp = null;
     /**
@@ -173,7 +173,7 @@ class CustomGestureEventHandler{
     /**
      * customevent option 부 생성
      * @param {Event} event 
-     * @param {(String|null)} message 현재 사용안함 
+     * @param {?string} message 현재 사용안함 
      * @returns {Object}
      */
     options(event,message){
@@ -187,7 +187,7 @@ class CustomGestureEventHandler{
     /**
      * customevent option.detail 부 생성
      * @param {Event} event 
-     * @param {(String|null)} message 현재 사용안함
+     * @param {?string} message 현재 사용안함
      * @returns {Object}
      */
     detail(event,message){
@@ -198,9 +198,10 @@ class CustomGestureEventHandler{
     }
 
     /**
-     * customointerdown 이벤트 등록 용 화살표 함수
-     * @param {Event} event 
-     * @returns {Function}
+     * customointerdown 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbCustompointerdown = (event) =>{
         return this.custompointerdown(event)
@@ -225,9 +226,10 @@ class CustomGestureEventHandler{
     }
 
     /**
-     * custompointermove 이벤트 등록 용 화살표 함수
-     * @param {Event} event 
-     * @returns {Function}
+     * custompointermove 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbCustompointermove = (event) =>{
         return this.custompointermove(event)
@@ -273,9 +275,10 @@ class CustomGestureEventHandler{
     }
 
     /**
-     * custompointerup 이벤트 등록 용 화살표 함수
-     * @param {Event} event 
-     * @returns {Function}
+     * custompointerup 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbCustompointerup = (event) =>{
         return this.custompointerup(event)
@@ -368,7 +371,7 @@ class CustomGestureEventHandler{
     }
 
     /**
-     * custompointercancel 이벤트 등록 용 화살표 함수
+     * custompointercancel 이벤트 등록용 화살표 함수
      * @param {Event} event 
      * @returns {method}
      */

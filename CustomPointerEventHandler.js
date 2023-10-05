@@ -22,25 +22,25 @@ class CustomPointerEventHandler{
      */
     activated = false;
     /**
-     * 이벤트 리스너 대상
-     * @type {Window|HTMLElement|null}
+     * 이벤트 리스너 요소
+     * @type {?(Window|HTMLElement)}
      */
     listener = null;
     /**
      * 최초 이벤트 발생 요소 (pointerdown 에서 event.target)
-     * @type {Window|HTMLElement|null}
+     * @type {?(Window|HTMLElement)}
      */
     target = null;
 
     // 시간정보
     /**
      * 최초 이벤트 발생 시간 (unix timestamp)
-     * @type {number}
+     * @type {?number}
      */
     firstTimeStamp = null;
     /**
      * 이벤트 발생 시간 (unix timestamp)
-     * @type {number}
+     * @type {?number}
      */
     timeStamp = null;
 
@@ -467,8 +467,10 @@ class CustomPointerEventHandler{
     }
 
     /**
-     * pointerdown 이벤트 등록 용 화살표 함수
-     * @type { function(event): function(event) }
+     * pointerdown 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbPointerdown = (event) =>{
         return this.pointerdown(event)
@@ -503,8 +505,10 @@ class CustomPointerEventHandler{
     }
 
     /**
-     * pointermove 이벤트 등록 용 화살표 함수
-     * @type { function(event): function(event) }
+     * pointermove 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbPointermove = (event) =>{
         return this.pointermove(event)
@@ -532,8 +536,10 @@ class CustomPointerEventHandler{
     }
 
     /**
-     * pointerup 이벤트 등록 용 화살표 함수
-     * @type { function(event): function(event) }
+     * pointerup 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbPointerup = (event) =>{
         return this.pointerup(event)
@@ -589,8 +595,10 @@ class CustomPointerEventHandler{
     }
 
     /**
-     * pointercancel 이벤트 등록 용 화살표 함수
-     * @type { function(event): function(event) }
+     * pointercancel 이벤트 등록용 화살표 함수
+     * @function
+     * @param {Event} event
+     * @returns {function(event):void}
      */
     cbPointercancel = (event) =>{
         return this.pointercancel(event)
