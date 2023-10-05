@@ -29,7 +29,7 @@ class CustomGestureEventHandler{
      */
     listener = null;
     /**
-     * 최초 이벤트 발생 요소 (event.target)
+     * 최초 이벤트 발생 요소 (custompointerdown 에서 event.target)
      * @type {Window|HTMLElement|null}
      */
     target = null;
@@ -163,7 +163,6 @@ class CustomGestureEventHandler{
 
     /**
      * listener 에 removeEventListener
-     * @param {Window|HTMLElement} listener 
      */
     removeEventListener(){
         if(!this.activated){ console.warn('not activated'); }
