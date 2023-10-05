@@ -9,47 +9,47 @@ class PointerMeasurer{
 
   /**
    * pointerId for event
-   * @type {(number|null)}
+   * @type {?number}
    */
   pointerId = null;
   /**
    * isPrimary for event
-   * @type {(boolean|null)}
+   * @type {?boolean}
    */
   isPrimary = null;
   /**
    * first point x
-   * @type {(number|null)}
+   * @type {?number}
    */
   firstX = null;
   /**
    * first point y
-   * @type {(number|null)}
+   * @type {?number}
    */
   firstY = null;
   /**
    * first timeStamp (ms)
-   * @type {(number|null)}
+   * @type {?number}
    */
   firstTimeStamp = null;
   /**
    * current point x
-   * @type {(number|null)}
+   * @type {?number}
    */
   x = null;
   /**
    * current point y
-   * @type {(number|null)}
+   * @type {?number}
    */
   y = null;
   /**
    * current timeStamp (ms)
-   * @type {(number|null)}
+   * @type {?number}
    */
   timeStamp = null;
   /**
    * @constructor
-   * @param {(PointerEvent|null)} event 
+   * @param {PointerEvent=} event 
    */
   constructor(event){
     this.reset();
